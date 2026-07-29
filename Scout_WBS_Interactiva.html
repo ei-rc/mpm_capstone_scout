@@ -1,0 +1,161 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>EDT/WBS Scout</title><style>
+:root{--navy:#1f365c;--gold:#f6b82e;--bg:#f5f7fb;--ink:#1c2430;--muted:#607086;--red:#b42318;--green:#16794b}
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(110deg,var(--gold),var(--navy));color:white;padding:28px 34px}header h1{margin:0 0 6px;font-size:28px}header p{margin:0;opacity:.95}
+main{padding:22px 28px;max-width:1500px;margin:auto}.card{background:white;border:1px solid #dce2ea;border-radius:12px;padding:18px;margin-bottom:18px;box-shadow:0 3px 12px rgba(31,54,92,.08)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.toolbar button,.toolbar select,.toolbar input{padding:9px 12px;border:1px solid #c8d0dc;border-radius:7px;background:white}.toolbar button{cursor:pointer;background:var(--navy);color:white;border:0}.toolbar button.secondary{background:#6a7687}
+.note{font-size:13px;color:var(--muted);font-style:italic;margin-top:14px}.badge{display:inline-block;padding:3px 8px;border-radius:12px;font-size:12px;background:#e9eef6}.critical{background:#fde8e7;color:var(--red)}
+table{width:100%;border-collapse:collapse;font-size:13px}th{background:var(--navy);color:white;position:sticky;top:0;z-index:2}th,td{border:1px solid #d7dde6;padding:7px;vertical-align:top}tr:nth-child(even){background:#f8fafc}
+@media print{header,.toolbar{display:none}.card{box-shadow:none;border:0}body{background:white}main{padding:0}}
+
+.tree{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}.node{border-left:6px solid var(--gold);background:#fff;border-radius:10px;padding:13px;border-top:1px solid #e1e6ed;border-right:1px solid #e1e6ed;border-bottom:1px solid #e1e6ed}.node h3{margin:0 0 6px;color:var(--navy)}.node p{margin:0;color:#4b5a70;font-size:13px}.level1{grid-column:1/-1;border-left-color:var(--navy);background:#edf2f8}
+
+/* --- ESTILOS DE NAVEGACIÓN GLOBAL --- */
+.global-nav {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* Botón Home */
+.btn-home {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--navy, #1f365c); /* Usa el azul marino de tu paleta */
+  color: white;
+  padding: 9px 16px;
+  border-radius: 7px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: background-color 0.2s ease;
+}
+.btn-home:hover {
+  background-color: #2d4c7e; /* Un tono más claro al pasar el mouse */
+  color: white;
+}
+
+/* Dropdown Container */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Button */
+.btn-dropdown {
+  background-color: white;
+  color: #475569;
+  padding: 9px 16px;
+  border: 1px solid #c8d0dc;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  font-family: inherit;
+}
+.btn-dropdown:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+}
+
+/* Dropdown Menu Contenido (Oculto por defecto) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 260px;
+  box-shadow: 0px 8px 16px 0px rgba(31,54,92,0.15);
+  border: 1px solid #dce2ea;
+  border-radius: 8px;
+  z-index: 100;
+  top: 110%; /* Aparece justo debajo del botón */
+  left: 0;
+  padding: 8px 0;
+}
+
+/* Mostrar el menú al hacer hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Títulos de agrupación en el menú */
+.dropdown-group {
+  padding: 8px 16px 4px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Enlaces del menú */
+.dropdown-content a {
+  color: var(--ink, #1c2430);
+  padding: 8px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.dropdown-content a:hover {
+  background-color: #edf4ff; /* Fondo azul muy suave al pasar el mouse */
+  color: var(--navy, #1f365c);
+}
+
+/* Ocultar en impresión */
+@media print {
+  .global-nav { display: none !important; }
+}
+/* ------------------------------------ */
+
+
+</style></head><body><header><h1>EDT / WBS interactiva — Implementación de Scout</h1><p>Everline Solutions | Piloto del 20 de julio al 13 de septiembre de 2026</p></header><main>
+
+<!-- INCIO DE NAVEGACIÓN GLOBAL -->
+<div class="global-nav">
+  <!-- Botón Home -->
+  <a href="index.html" class="btn-home">
+    <!-- Icono de casita SVG -->
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px; vertical-align: text-bottom;">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+    Volver al Índice
+  </a>
+
+  <!-- Dropdown Menu -->
+  <div class="dropdown">
+    <button class="btn-dropdown">
+      Ir a otro anexo
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 6px; vertical-align: middle;">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+    <div class="dropdown-content">
+      <div class="dropdown-group">Alcance y Requisitos</div>
+      <a href="Scout_Tabla3_Registro_Requisitos_Interactivo.html">Registro Consolidado de Requisitos</a>
+      <a href="Scout_Tabla4_Matriz_Trazabilidad_Requisitos_Interactiva.html">Matriz de Trazabilidad</a>
+      <!-- <a href="Scout_WBS_Interactiva.html">EDT / WBS Interactiva</a>-->
+      
+      <div class="dropdown-group">Cronograma</div>
+      <a href="Scout_Tabla9_Lista maestra de actividades.html">Lista Maestra de Actividades</a>
+      <a href="Scout_Tabla10_Secuencia, dependencias y fechas de actividades.html">Secuencia y Dependencias</a>
+      <a href="Scout_Gantt_Detallado.html">Cronograma Gantt Detallado</a>
+      
+      <div class="dropdown-group">Costos</div>
+      <a href="Scout_Tabla15_Estimacion_Costos_Actividad_Interactiva.html">Estimación Detallada de Costos</a>
+      <a href="Scout_Linea_Base_Costos.html">Línea Base de Costos</a>
+    </div>
+  </div>
+</div>
+<!-- FIN DE NAVEGACIÓN GLOBAL -->
+
+
+
+<div class="card"><div class="toolbar"><input id="q" placeholder="Buscar código o entregable"><select id="level"><option value="all">Todos los niveles</option><option value="1">Nivel 1</option><option value="2">Nivel 2</option></select><button onclick="window.print()">Imprimir / Guardar PDF</button></div><div id="tree" class="tree"></div><p class="note">Fuente: Elaboración propia.</p></div>
+<script>const data=[{"code": "1.0", "name": "Dirección del proyecto", "description": "Gobernanza, planificación integrada, control de cambios, seguimiento y cierre administrativo."}, {"code": "1.1", "name": "Inicio y gobernanza", "description": "Kickoff, interesados, plan de dirección, repositorio y estructura de decisión."}, {"code": "1.2", "name": "Monitoreo y control", "description": "Seguimiento semanal de alcance, cronograma, costo, riesgos, calidad y decisiones."}, {"code": "2.0", "name": "Análisis y definición del alcance", "description": "Línea base, proceso AS-IS, requisitos, prototipo y alcance aprobado."}, {"code": "2.1", "name": "Diagnóstico operativo", "description": "Indicadores, extracción, validación, mapa de proceso y motivos de contacto."}, {"code": "2.2", "name": "Requisitos y alcance", "description": "Talleres, registro, priorización, prototipo y aprobación del alcance."}, {"code": "3.0", "name": "Datos y conocimiento", "description": "Preparación de artículos, interacciones, etiquetas, privacidad y aprobación."}, {"code": "3.1", "name": "Base de conocimiento", "description": "Inventario, propietarios, vigencia y depuración de 60 artículos."}, {"code": "3.2", "name": "Datos históricos", "description": "Extracción, anonimización, taxonomía y etiquetado de 3,000 interacciones."}, {"code": "3.3", "name": "Validación de contenidos", "description": "Control de calidad y aprobación de datos para configuración."}, {"code": "4.0", "name": "Diseño y configuración de Scout", "description": "Arquitectura, UX, modelo, reglas, scripts, alertas, resumen y feedback."}, {"code": "4.1", "name": "Diseño de solución", "description": "Arquitectura, ambientes y experiencia del sidebar."}, {"code": "4.2", "name": "Configuración funcional", "description": "Modelo, intenciones, entidades, NBA, scripts, alertas y resumen."}, {"code": "5.0", "name": "Integración y aseguramiento", "description": "Conectores, seguridad, pruebas técnicas y PAU."}, {"code": "5.1", "name": "Integraciones", "description": "Telefonía, SGC, conocimiento, autenticación y permisos."}, {"code": "5.2", "name": "Pruebas técnicas y seguridad", "description": "Integración, rendimiento, privacidad, seguridad y correcciones."}, {"code": "5.3", "name": "Aceptación del usuario", "description": "Casos de PAU, ejecución, revalidación y go/no-go."}, {"code": "6.0", "name": "Cambio y despliegue", "description": "Gestión del cambio, capacitación, readiness, lanzamiento y estabilización."}, {"code": "6.1", "name": "Preparación de adopción", "description": "Comunicaciones, materiales y champions."}, {"code": "6.2", "name": "Capacitación y readiness", "description": "Supervisores, agentes, modo sombra y preparación."}, {"code": "6.3", "name": "Piloto controlado", "description": "Lanzamiento, hiperacompañamiento, adopción y estabilización."}, {"code": "7.0", "name": "Medición y cierre", "description": "Resultados, comparación, caso financiero, lecciones y decisión ejecutiva."}, {"code": "7.1", "name": "Medición del piloto", "description": "KPIs, disponibilidad, adopción y feedback."}, {"code": "7.2", "name": "Evaluación de resultados", "description": "Comparación, validación, B/C, payback y lecciones."}, {"code": "7.3", "name": "Cierre y escalamiento", "description": "Informe final, presentación y decisión."}];const tree=document.getElementById('tree');function draw(){const q=document.getElementById('q').value.toLowerCase();const lev=document.getElementById('level').value;tree.innerHTML='';data.filter(x=>(lev==='all'||(x.code.split('.').filter(Boolean).length===Number(lev)))&&(x.code+' '+x.name+' '+x.description).toLowerCase().includes(q)).forEach(x=>{const div=document.createElement('div');div.className='node '+(x.code.endsWith('.0')?'level1':'');div.innerHTML=`<h3>${x.code} · ${x.name}</h3><p>${x.description}</p>`;tree.appendChild(div)})}document.getElementById('q').oninput=draw;document.getElementById('level').onchange=draw;draw();</script></main></body></html>

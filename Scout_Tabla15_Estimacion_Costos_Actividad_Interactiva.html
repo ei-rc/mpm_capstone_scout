@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tabla 15. Estimación detallada de costos por actividad - Scout</title>
+<style>
+:root {
+  --navy:#1f365c;
+  --navy-2:#2d4c7e;
+  --gold:#f6b82e;
+  --bg:#f4f6fa;
+  --ink:#1c2430;
+  --muted:#64748b;
+  --line:#d7dde6;
+  --soft:#eef2f7;
+  --green:#166534;
+  --green-bg:#dcfce7;
+  --blue:#1d4ed8;
+  --blue-bg:#dbeafe;
+  --amber:#92400e;
+  --amber-bg:#fef3c7;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:"Segoe UI",Arial,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+}
+header{
+  background:linear-gradient(110deg,var(--gold),var(--navy));
+  color:#fff;
+  padding:30px 34px;
+}
+header h1{margin:0 0 7px;font-size:28px;line-height:1.2}
+header p{margin:0;max-width:1100px;opacity:.96}
+main{max-width:1680px;margin:auto;padding:22px 28px 34px}
+.card{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:18px;
+  margin-bottom:18px;
+  box-shadow:0 3px 12px rgba(31,54,92,.08);
+}
+.intro{line-height:1.58;margin:0 0 16px}
+.meta{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(180px,1fr));
+  gap:12px;
+}
+.metric{background:var(--soft);border-radius:10px;padding:13px}
+.metric b{display:block;font-size:22px;color:var(--navy)}
+.metric span{font-size:12px;color:var(--muted)}
+.toolbar{
+  display:flex;
+  align-items:end;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.toolbar label{
+  font-size:12px;
+  color:#475569;
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+.toolbar input,.toolbar select,.toolbar button{
+  height:40px;
+  padding:8px 11px;
+  border:1px solid #c7cfda;
+  border-radius:7px;
+  background:#fff;
+  font-size:14px;
+}
+.toolbar input{min-width:320px}
+.toolbar button{
+  cursor:pointer;
+  background:#687587;
+  color:#fff;
+  border:0;
+  font-weight:600;
+}
+.toolbar button:hover{background:#536071}
+.status{
+  margin-left:auto;
+  color:var(--muted);
+  font-size:13px;
+  padding:10px 0;
+}
+.table-wrap{
+  overflow:auto;
+  max-height:68vh;
+  border:1px solid var(--line);
+  border-radius:8px;
+}
+table{
+  width:100%;
+  min-width:1370px;
+  border-collapse:separate;
+  border-spacing:0;
+  font-size:13px;
+}
+th{
+  position:sticky;
+  top:0;
+  z-index:3;
+  background:var(--navy);
+  color:#fff;
+  text-align:left;
+  cursor:pointer;
+  user-select:none;
+}
+th:hover{background:var(--navy-2)}
+th .sort{opacity:.68;margin-left:5px}
+th,td{
+  padding:9px 10px;
+  border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  vertical-align:top;
+}
+th:last-child,td:last-child{border-right:0}
+tbody tr:nth-child(even){background:#f8fafc}
+tbody tr:hover{background:#edf4ff}
+td.amount{text-align:right;font-weight:700;white-space:nowrap}
+tfoot td{
+  background:#eef2f7;
+  font-weight:700;
+  position:sticky;
+  bottom:0;
+  z-index:2;
+}
+.badge{
+  display:inline-block;
+  border-radius:999px;
+  padding:3px 8px;
+  font-size:11px;
+  font-weight:700;
+  white-space:nowrap;
+}
+.badge.id{background:var(--blue-bg);color:var(--blue)}
+.badge.category{background:var(--green-bg);color:var(--green)}
+.badge.method{background:var(--amber-bg);color:var(--amber)}
+.pagination{
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  align-items:center;
+  margin-top:14px;
+  flex-wrap:wrap;
+}
+.pagination button{
+  border:1px solid #c7cfda;
+  background:#fff;
+  border-radius:6px;
+  padding:7px 10px;
+  cursor:pointer;
+}
+.pagination button.active{
+  background:var(--navy);
+  color:#fff;
+  border-color:var(--navy);
+}
+.pagination button:disabled{opacity:.45;cursor:not-allowed}
+.note{
+  font-size:13px;
+  color:var(--muted);
+  font-style:italic;
+  margin:14px 0 0;
+}
+@media(max-width:900px){
+  main{padding:14px}
+  header{padding:24px 18px}
+  .meta{grid-template-columns:repeat(2,1fr)}
+  .toolbar input{min-width:220px}
+  .status{width:100%;margin-left:0}
+}
+@media print{
+  body{background:#fff}
+  header,.toolbar,.pagination{display:none!important}
+  main{padding:0;max-width:none}
+  .card{box-shadow:none;border:0;padding:0}
+  .table-wrap{max-height:none;overflow:visible;border:0}
+  table{min-width:0;font-size:8px}
+  th,tfoot td{position:static}
+}
+
+/* --- ESTILOS DE NAVEGACIÓN GLOBAL --- */
+.global-nav {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* Botón Home */
+.btn-home {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--navy, #1f365c); /* Usa el azul marino de tu paleta */
+  color: white;
+  padding: 9px 16px;
+  border-radius: 7px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: background-color 0.2s ease;
+}
+.btn-home:hover {
+  background-color: #2d4c7e; /* Un tono más claro al pasar el mouse */
+  color: white;
+}
+
+/* Dropdown Container */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Button */
+.btn-dropdown {
+  background-color: white;
+  color: #475569;
+  padding: 9px 16px;
+  border: 1px solid #c8d0dc;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  font-family: inherit;
+}
+.btn-dropdown:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+}
+
+/* Dropdown Menu Contenido (Oculto por defecto) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 260px;
+  box-shadow: 0px 8px 16px 0px rgba(31,54,92,0.15);
+  border: 1px solid #dce2ea;
+  border-radius: 8px;
+  z-index: 100;
+  top: 110%; /* Aparece justo debajo del botón */
+  left: 0;
+  padding: 8px 0;
+}
+
+/* Mostrar el menú al hacer hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Títulos de agrupación en el menú */
+.dropdown-group {
+  padding: 8px 16px 4px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Enlaces del menú */
+.dropdown-content a {
+  color: var(--ink, #1c2430);
+  padding: 8px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.dropdown-content a:hover {
+  background-color: #edf4ff; /* Fondo azul muy suave al pasar el mouse */
+  color: var(--navy, #1f365c);
+}
+
+/* Ocultar en impresión */
+@media print {
+  .global-nav { display: none !important; }
+}
+/* ------------------------------------ */
+
+
+</style>
+</head>
+<body>
+<header>
+  <h1>Tabla 15. Estimación detallada de costos por actividad</h1>
+  <p>Proyecto de implementación de Scout en Everline Solutions</p>
+</header>
+
+<main>
+
+<!-- INCIO DE NAVEGACIÓN GLOBAL -->
+<div class="global-nav">
+  <!-- Botón Home -->
+  <a href="index.html" class="btn-home">
+    <!-- Icono de casita SVG -->
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px; vertical-align: text-bottom;">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+    Volver al Índice
+  </a>
+
+  <!-- Dropdown Menu -->
+  <div class="dropdown">
+    <button class="btn-dropdown">
+      Ir a otro anexo
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 6px; vertical-align: middle;">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+    <div class="dropdown-content">
+      <div class="dropdown-group">Alcance y Requisitos</div>
+      <a href="Scout_Tabla3_Registro_Requisitos_Interactivo.html">Registro Consolidado de Requisitos</a>
+      <a href="Scout_Tabla4_Matriz_Trazabilidad_Requisitos_Interactiva.html">Matriz de Trazabilidad</a>
+      <a href="Scout_WBS_Interactiva.html">EDT / WBS Interactiva</a>
+      
+      <div class="dropdown-group">Cronograma</div>
+      <a href="Scout_Tabla9_Lista maestra de actividades.html">Lista Maestra de Actividades</a>
+      <a href="Scout_Tabla10_Secuencia, dependencias y fechas de actividades.html">Secuencia y Dependencias</a>
+      <a href="Scout_Gantt_Detallado.html">Cronograma Gantt Detallado</a>
+      
+      <div class="dropdown-group">Costos</div>
+      <!-- <a href="Scout_Tabla15_Estimacion_Costos_Actividad_Interactiva.html">Estimación Detallada de Costos</a>-->
+      <a href="Scout_Linea_Base_Costos.html">Línea Base de Costos</a>
+    </div>
+  </div>
+</div>
+<!-- FIN DE NAVEGACIÓN GLOBAL -->
+
+
+
+<section class="card">
+  <p class="intro">
+    La estimación desagrega el costo del proyecto a partir de las actividades planificadas,
+    sus conceptos de gasto, las categorías presupuestarias y el método utilizado para calcular
+    cada monto. Esta estructura permite relacionar directamente la línea base de costos con la EDT,
+    el cronograma y los entregables establecidos para el piloto.
+  </p>
+  <div class="meta">
+    <div class="metric"><b>31</b><span>registros de costo</span></div>
+    <div class="metric"><b>31</b><span>actividades o grupos vinculados</span></div>
+    <div class="metric"><b>6</b><span>categorías presupuestarias</span></div>
+    <div class="metric"><b>USD 74,500.00</b><span>monto mostrado en la tabla</span></div>
+  </div>
+</section>
+
+<section class="card">
+  <div class="toolbar">
+    <label>Buscar
+      <input id="search" type="search" placeholder="ID, actividad, concepto, categoría o método">
+    </label>
+    <label>Categoría
+      <select id="filter_categoria"><option value="">Todas</option></select>
+    </label>
+    <label>Método
+      <select id="filter_metodo"><option value="">Todos</option></select>
+    </label>
+    <label>Actividad / ID
+      <select id="filter_id"><option value="">Todas</option></select>
+    </label>
+    <label>Filas
+      <select id="page_size">
+        <option>10</option>
+        <option selected>20</option>
+        <option>30</option>
+        <option value="0">Todas</option>
+      </select>
+    </label>
+    <button id="reset" type="button">Restablecer</button>
+    <div id="status" class="status"></div>
+  </div>
+</section>
+
+<section class="card">
+  <div class="table-wrap">
+    <table id="data_table">
+      <thead>
+        <tr>
+          <th data-key="ID">ID <span class="sort">↕</span></th>
+          <th data-key="Actividad(es)">Actividad(es) <span class="sort">↕</span></th>
+          <th data-key="Categoría">Categoría <span class="sort">↕</span></th>
+          <th data-key="Concepto">Concepto <span class="sort">↕</span></th>
+          <th data-key="Método">Método <span class="sort">↕</span></th>
+          <th data-key="_amount">Monto <span class="sort">↕</span></th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+      <tfoot>
+        <tr>
+          <td colspan="5">Total de los registros filtrados</td>
+          <td id="filtered_total" class="amount"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <div id="pagination" class="pagination"></div>
+  <p class="note">
+    Fuente: Elaboración propia. Valores ficticios preparados exclusivamente para fines académicos.
+    Recurso digital complementario del Capítulo 2 - Planificación.
+  </p>
+</section>
+</main>
+
+<script>
+const DATA=[{"ID": "C01", "Actividad(es)": "A25", "Categoría": "Licenciamiento y configuración", "Concepto": "Licencias de plataforma para 120 agentes y ambientes del piloto", "Método": "Cotización/paramétrica", "Monto": "USD 16,000", "_amount": 16000.0, "_row": 1}, {"ID": "C02", "Actividad(es)": "A25", "Categoría": "Licenciamiento y configuración", "Concepto": "Ambientes sandbox y producción controlada", "Método": "Análoga", "Monto": "USD 3,500", "_amount": 3500.0, "_row": 2}, {"ID": "C03", "Actividad(es)": "A27-A33", "Categoría": "Licenciamiento y configuración", "Concepto": "Servicios de configuración funcional y ajustes del modelo", "Método": "Bottom-up", "Monto": "USD 3,500", "_amount": 3500.0, "_row": 3}, {"ID": "C04", "Actividad(es)": "A52", "Categoría": "Licenciamiento y configuración", "Concepto": "Soporte especializado e hiperacompañamiento de lanzamiento", "Método": "Bottom-up", "Monto": "USD 1,000", "_amount": 1000.0, "_row": 4}, {"ID": "C05", "Actividad(es)": "A24", "Categoría": "Integraciones y desarrollo", "Concepto": "Diseño de arquitectura e interfaces", "Método": "Bottom-up", "Monto": "USD 1,500", "_amount": 1500.0, "_row": 5}, {"ID": "C06", "Actividad(es)": "A34", "Categoría": "Integraciones y desarrollo", "Concepto": "Integración con telefonía y transcripción", "Método": "Cotización/3 puntos", "Monto": "USD 5,000", "_amount": 5000.0, "_row": 6}, {"ID": "C07", "Actividad(es)": "A35", "Categoría": "Integraciones y desarrollo", "Concepto": "Integración con SGC y resumen de caso", "Método": "Cotización/3 puntos", "Monto": "USD 5,000", "_amount": 5000.0, "_row": 7}, {"ID": "C08", "Actividad(es)": "A36", "Categoría": "Integraciones y desarrollo", "Concepto": "Conector con base de conocimiento", "Método": "Bottom-up", "Monto": "USD 3,000", "_amount": 3000.0, "_row": 8}, {"ID": "C09", "Actividad(es)": "A37", "Categoría": "Integraciones y desarrollo", "Concepto": "Autenticación, perfiles y permisos", "Método": "Bottom-up", "Monto": "USD 1,500", "_amount": 1500.0, "_row": 9}, {"ID": "C10", "Actividad(es)": "A38", "Categoría": "Integraciones y desarrollo", "Concepto": "Pruebas técnicas de integración", "Método": "Bottom-up", "Monto": "USD 2,000", "_amount": 2000.0, "_row": 10}, {"ID": "C11", "Actividad(es)": "A16-A17", "Categoría": "Datos y conocimiento", "Concepto": "Inventario, propietarios y vigencia de artículos", "Método": "Bottom-up", "Monto": "USD 1,000", "_amount": 1000.0, "_row": 11}, {"ID": "C12", "Actividad(es)": "A18", "Categoría": "Datos y conocimiento", "Concepto": "Extracción de 3,000 interacciones", "Método": "Paramétrica", "Monto": "USD 1,500", "_amount": 1500.0, "_row": 12}, {"ID": "C13", "Actividad(es)": "A19", "Categoría": "Datos y conocimiento", "Concepto": "Anonimización y control de privacidad del dataset", "Método": "Paramétrica", "Monto": "USD 2,500", "_amount": 2500.0, "_row": 13}, {"ID": "C14", "Actividad(es)": "A20,A22", "Categoría": "Datos y conocimiento", "Concepto": "Taxonomía, etiquetado y control muestral", "Método": "Bottom-up", "Monto": "USD 2,000", "_amount": 2000.0, "_row": 14}, {"ID": "C15", "Actividad(es)": "A21", "Categoría": "Datos y conocimiento", "Concepto": "Depuración y actualización de 60 artículos", "Método": "Paramétrica", "Monto": "USD 2,500", "_amount": 2500.0, "_row": 15}, {"ID": "C16", "Actividad(es)": "A23", "Categoría": "Datos y conocimiento", "Concepto": "Validación y aprobación de datos/conocimiento", "Método": "Bottom-up", "Monto": "USD 1,000", "_amount": 1000.0, "_row": 16}, {"ID": "C17", "Actividad(es)": "A40", "Categoría": "Seguridad y aseguramiento de calidad", "Concepto": "Evaluación de privacidad y cumplimiento", "Método": "Bottom-up", "Monto": "USD 2,000", "_amount": 2000.0, "_row": 17}, {"ID": "C18", "Actividad(es)": "A40-A41", "Categoría": "Seguridad y aseguramiento de calidad", "Concepto": "Pruebas de seguridad y remediación", "Método": "Cotización", "Monto": "USD 2,500", "_amount": 2500.0, "_row": 18}, {"ID": "C19", "Actividad(es)": "A42-A44", "Categoría": "Seguridad y aseguramiento de calidad", "Concepto": "Diseño, ejecución y revalidación de PAU", "Método": "Bottom-up", "Monto": "USD 2,000", "_amount": 2000.0, "_row": 19}, {"ID": "C20", "Actividad(es)": "A39", "Categoría": "Seguridad y aseguramiento de calidad", "Concepto": "Pruebas de carga, rendimiento y latencia", "Método": "Bottom-up", "Monto": "USD 1,500", "_amount": 1500.0, "_row": 20}, {"ID": "C21", "Actividad(es)": "A46", "Categoría": "Capacitación y gestión del cambio", "Concepto": "Plan de cambio y comunicaciones", "Método": "Bottom-up", "Monto": "USD 1,000", "_amount": 1000.0, "_row": 21}, {"ID": "C22", "Actividad(es)": "A47", "Categoría": "Capacitación y gestión del cambio", "Concepto": "Materiales, guías y simulaciones", "Método": "Bottom-up", "Monto": "USD 1,500", "_amount": 1500.0, "_row": 22}, {"ID": "C23", "Actividad(es)": "A49", "Categoría": "Capacitación y gestión del cambio", "Concepto": "Capacitación de supervisores", "Método": "Paramétrica", "Monto": "USD 500", "_amount": 500.0, "_row": 23}, {"ID": "C24", "Actividad(es)": "A50", "Categoría": "Capacitación y gestión del cambio", "Concepto": "Capacitación de 120 agentes", "Método": "Paramétrica", "Monto": "USD 2,500", "_amount": 2500.0, "_row": 24}, {"ID": "C25", "Actividad(es)": "A48,A53", "Categoría": "Capacitación y gestión del cambio", "Concepto": "Champions, nudges y adopción", "Método": "Bottom-up", "Monto": "USD 1,000", "_amount": 1000.0, "_row": 25}, {"ID": "C26", "Actividad(es)": "A51", "Categoría": "Capacitación y gestión del cambio", "Concepto": "Modo sombra y evaluación de readiness", "Método": "Bottom-up", "Monto": "USD 1,000", "_amount": 1000.0, "_row": 26}, {"ID": "C27", "Actividad(es)": "A01-A03", "Categoría": "Dirección del proyecto", "Concepto": "Inicio y consolidación del plan integrado", "Método": "Bottom-up", "Monto": "USD 1,200", "_amount": 1200.0, "_row": 27}, {"ID": "C28", "Actividad(es)": "A04-A05", "Categoría": "Dirección del proyecto", "Concepto": "Gobernanza, comité y seguimiento ejecutivo", "Método": "Bottom-up", "Monto": "USD 1,500", "_amount": 1500.0, "_row": 28}, {"ID": "C29", "Actividad(es)": "A05", "Categoría": "Dirección del proyecto", "Concepto": "Control de cronograma, costos y desempeño", "Método": "Bottom-up", "Monto": "USD 1,500", "_amount": 1500.0, "_row": 29}, {"ID": "C30", "Actividad(es)": "A61-A62", "Categoría": "Dirección del proyecto", "Concepto": "Informe final, cierre y recomendación de escalamiento", "Método": "Bottom-up", "Monto": "USD 1,300", "_amount": 1300.0, "_row": 30}, {"ID": "C31", "Actividad(es)": "A06", "Categoría": "Dirección del proyecto", "Concepto": "Gestión documental y soporte administrativo", "Método": "Bottom-up", "Monto": "USD 1,000", "_amount": 1000.0, "_row": 31}];
+const FIELDS=["ID","Actividad(es)","Categoría","Concepto","Método","Monto"];
+const FILTERS={
+  "Categoría":"filter_categoria",
+  "Método":"filter_metodo",
+  "ID":"filter_id"
+};
+let state={sortKey:"ID",sortDir:1,page:1};
+
+const normalize=value=>(value??"").toString()
+  .normalize("NFD")
+  .replace(/[\u0300-\u036f]/g,"")
+  .toLowerCase();
+
+const money=new Intl.NumberFormat("en-US",{
+  style:"currency",
+  currency:"USD",
+  minimumFractionDigits:2,
+  maximumFractionDigits:2
+});
+
+function populateFilters(){
+  Object.entries(FILTERS).forEach(([key,id])=>{
+    const select=document.getElementById(id);
+    [...new Set(DATA.map(row=>row[key]).filter(Boolean))]
+      .sort((a,b)=>String(a).localeCompare(String(b),"es",{numeric:true}))
+      .forEach(value=>{
+        const option=document.createElement("option");
+        option.value=value;
+        option.textContent=value;
+        select.appendChild(option);
+      });
+  });
+}
+
+function getFiltered(){
+  const query=normalize(document.getElementById("search").value);
+  let rows=DATA.filter(row=>{
+    if(query && !FIELDS.some(key=>normalize(row[key]).includes(query))) return false;
+    for(const [key,id] of Object.entries(FILTERS)){
+      const selected=document.getElementById(id).value;
+      if(selected && row[key]!==selected) return false;
+    }
+    return true;
+  });
+
+  const key=state.sortKey;
+  rows.sort((a,b)=>{
+    if(key==="_amount") return (a._amount-b._amount)*state.sortDir;
+    return String(a[key]??"").localeCompare(
+      String(b[key]??""),
+      "es",
+      {numeric:true}
+    )*state.sortDir;
+  });
+  return rows;
+}
+
+function render(){
+  const rows=getFiltered();
+  const pageSize=Number(document.getElementById("page_size").value);
+  const pages=pageSize ? Math.max(1,Math.ceil(rows.length/pageSize)) : 1;
+  if(state.page>pages) state.page=pages;
+
+  const shown=pageSize
+    ? rows.slice((state.page-1)*pageSize,state.page*pageSize)
+    : rows;
+
+  const tbody=document.querySelector("#data_table tbody");
+  tbody.innerHTML="";
+
+  shown.forEach(row=>{
+    const tr=document.createElement("tr");
+
+    const tdId=document.createElement("td");
+    const idBadge=document.createElement("span");
+    idBadge.className="badge id";
+    idBadge.textContent=row["ID"];
+    tdId.appendChild(idBadge);
+    tr.appendChild(tdId);
+
+    const tdActivity=document.createElement("td");
+    tdActivity.textContent=row["Actividad(es)"];
+    tr.appendChild(tdActivity);
+
+    const tdCategory=document.createElement("td");
+    const categoryBadge=document.createElement("span");
+    categoryBadge.className="badge category";
+    categoryBadge.textContent=row["Categoría"];
+    tdCategory.appendChild(categoryBadge);
+    tr.appendChild(tdCategory);
+
+    const tdConcept=document.createElement("td");
+    tdConcept.textContent=row["Concepto"];
+    tr.appendChild(tdConcept);
+
+    const tdMethod=document.createElement("td");
+    const methodBadge=document.createElement("span");
+    methodBadge.className="badge method";
+    methodBadge.textContent=row["Método"];
+    tdMethod.appendChild(methodBadge);
+    tr.appendChild(tdMethod);
+
+    const tdAmount=document.createElement("td");
+    tdAmount.className="amount";
+    tdAmount.textContent=money.format(row["_amount"]);
+    tr.appendChild(tdAmount);
+
+    tbody.appendChild(tr);
+  });
+
+  const filteredTotal=rows.reduce((sum,row)=>sum+Number(row["_amount"]||0),0);
+  document.getElementById("filtered_total").textContent=money.format(filteredTotal);
+  document.getElementById("status").textContent=
+    `Mostrando ${shown.length} de ${rows.length} registros`;
+
+  renderPagination(pages);
+
+  document.querySelectorAll("th").forEach(th=>{
+    const sort=th.querySelector(".sort");
+    sort.textContent=th.dataset.key===state.sortKey
+      ? (state.sortDir===1 ? "↑" : "↓")
+      : "↕";
+  });
+}
+
+function renderPagination(pages){
+  const container=document.getElementById("pagination");
+  container.innerHTML="";
+  if(pages<=1) return;
+
+  const addButton=(label,page,disabled=false,active=false)=>{
+    const button=document.createElement("button");
+    button.type="button";
+    button.textContent=label;
+    button.disabled=disabled;
+    if(active) button.className="active";
+    button.addEventListener("click",()=>{
+      state.page=page;
+      render();
+      document.querySelector(".table-wrap").scrollTop=0;
+    });
+    container.appendChild(button);
+  };
+
+  addButton("Anterior",Math.max(1,state.page-1),state.page===1);
+  const low=Math.max(1,state.page-2);
+  const high=Math.min(pages,state.page+2);
+  for(let page=low;page<=high;page++){
+    addButton(String(page),page,false,page===state.page);
+  }
+  addButton("Siguiente",Math.min(pages,state.page+1),state.page===pages);
+}
+
+document.querySelectorAll("th").forEach(th=>{
+  th.addEventListener("click",()=>{
+    const key=th.dataset.key;
+    if(state.sortKey===key) state.sortDir*=-1;
+    else {
+      state.sortKey=key;
+      state.sortDir=1;
+    }
+    state.page=1;
+    render();
+  });
+});
+
+document.getElementById("search").addEventListener("input",()=>{
+  state.page=1;
+  render();
+});
+
+document.getElementById("page_size").addEventListener("change",()=>{
+  state.page=1;
+  render();
+});
+
+Object.values(FILTERS).forEach(id=>{
+  document.getElementById(id).addEventListener("change",()=>{
+    state.page=1;
+    render();
+  });
+});
+
+document.getElementById("reset").addEventListener("click",()=>{
+  document.getElementById("search").value="";
+  Object.values(FILTERS).forEach(id=>document.getElementById(id).value="");
+  document.getElementById("page_size").value="20";
+  state={sortKey:"ID",sortDir:1,page:1};
+  render();
+});
+
+populateFilters();
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Costos Scout</title><style>
+:root{--navy:#1f365c;--gold:#f6b82e;--bg:#f5f7fb;--ink:#1c2430;--muted:#607086;--red:#b42318;--green:#16794b}
+*{box-sizing:border-box}body{margin:0;font-family:Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(110deg,var(--gold),var(--navy));color:white;padding:28px 34px}header h1{margin:0 0 6px;font-size:28px}header p{margin:0;opacity:.95}
+main{padding:22px 28px;max-width:1500px;margin:auto}.card{background:white;border:1px solid #dce2ea;border-radius:12px;padding:18px;margin-bottom:18px;box-shadow:0 3px 12px rgba(31,54,92,.08)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}.toolbar button,.toolbar select,.toolbar input{padding:9px 12px;border:1px solid #c8d0dc;border-radius:7px;background:white}.toolbar button{cursor:pointer;background:var(--navy);color:white;border:0}.toolbar button.secondary{background:#6a7687}
+.note{font-size:13px;color:var(--muted);font-style:italic;margin-top:14px}.badge{display:inline-block;padding:3px 8px;border-radius:12px;font-size:12px;background:#e9eef6}.critical{background:#fde8e7;color:var(--red)}
+table{width:100%;border-collapse:collapse;font-size:13px}th{background:var(--navy);color:white;position:sticky;top:0;z-index:2}th,td{border:1px solid #d7dde6;padding:7px;vertical-align:top}tr:nth-child(even){background:#f8fafc}
+@media print{header,.toolbar{display:none}.card{box-shadow:none;border:0}body{background:white}main{padding:0}}
+.bars{display:flex;align-items:flex-end;height:280px;gap:18px;padding:20px;border-bottom:1px solid #bbb}.bargrp{flex:1;text-align:center;min-width:62px}.bar{background:var(--navy);border-radius:6px 6px 0 0;min-height:3px;position:relative}.bar::after{content:attr(data-v);position:absolute;top:-20px;left:50%;transform:translateX(-50%);font-size:11px}.cum{font-size:11px;color:#536176;margin-top:4px}.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.kpi{background:#eef2f7;border-radius:10px;padding:14px}.kpi b{display:block;font-size:22px;color:var(--navy)}
+
+/* --- ESTILOS DE NAVEGACIÓN GLOBAL --- */
+.global-nav {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* Botón Home */
+.btn-home {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--navy, #1f365c); /* Usa el azul marino de tu paleta */
+  color: white;
+  padding: 9px 16px;
+  border-radius: 7px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: background-color 0.2s ease;
+}
+.btn-home:hover {
+  background-color: #2d4c7e; /* Un tono más claro al pasar el mouse */
+  color: white;
+}
+
+/* Dropdown Container */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Button */
+.btn-dropdown {
+  background-color: white;
+  color: #475569;
+  padding: 9px 16px;
+  border: 1px solid #c8d0dc;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  font-family: inherit;
+}
+.btn-dropdown:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+}
+
+/* Dropdown Menu Contenido (Oculto por defecto) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 260px;
+  box-shadow: 0px 8px 16px 0px rgba(31,54,92,0.15);
+  border: 1px solid #dce2ea;
+  border-radius: 8px;
+  z-index: 100;
+  top: 110%; /* Aparece justo debajo del botón */
+  left: 0;
+  padding: 8px 0;
+}
+
+/* Mostrar el menú al hacer hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Títulos de agrupación en el menú */
+.dropdown-group {
+  padding: 8px 16px 4px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Enlaces del menú */
+.dropdown-content a {
+  color: var(--ink, #1c2430);
+  padding: 8px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.dropdown-content a:hover {
+  background-color: #edf4ff; /* Fondo azul muy suave al pasar el mouse */
+  color: var(--navy, #1f365c);
+}
+
+/* Ocultar en impresión */
+@media print {
+  .global-nav { display: none !important; }
+}
+/* ------------------------------------ */
+
+
+</style></head><body><header><h1>Línea base de costos — Scout</h1><p>Estimación bottom-up vinculada con la EDT y el cronograma de ocho semanas.</p></header><main>
+
+<!-- INCIO DE NAVEGACIÓN GLOBAL -->
+<div class="global-nav">
+  <!-- Botón Home -->
+  <a href="index.html" class="btn-home">
+    <!-- Icono de casita SVG -->
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px; vertical-align: text-bottom;">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+    Volver al Índice
+  </a>
+
+  <!-- Dropdown Menu -->
+  <div class="dropdown">
+    <button class="btn-dropdown">
+      Ir a otro anexo
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 6px; vertical-align: middle;">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+    <div class="dropdown-content">
+      <div class="dropdown-group">Alcance y Requisitos</div>
+      <a href="Scout_Tabla3_Registro_Requisitos_Interactivo.html">Registro Consolidado de Requisitos</a>
+      <a href="Scout_Tabla4_Matriz_Trazabilidad_Requisitos_Interactiva.html">Matriz de Trazabilidad</a>
+      <a href="Scout_WBS_Interactiva.html">EDT / WBS Interactiva</a>
+      
+      <div class="dropdown-group">Cronograma</div>
+      <a href="Scout_Tabla9_Lista maestra de actividades.html">Lista Maestra de Actividades</a>
+      <a href="Scout_Tabla10_Secuencia, dependencias y fechas de actividades.html">Secuencia y Dependencias</a>
+      <a href="Scout_Gantt_Detallado.html">Cronograma Gantt Detallado</a>
+      
+      <div class="dropdown-group">Costos</div>
+      <a href="Scout_Tabla15_Estimacion_Costos_Actividad_Interactiva.html">Estimación Detallada de Costos</a>
+      <!-- <a href="Scout_Linea_Base_Costos.html">Línea Base de Costos</a>-->
+    </div>
+  </div>
+</div>
+<!-- FIN DE NAVEGACIÓN GLOBAL -->
+
+<div class="card"><div class="kpis"><div class="kpi">Estimación directa<b>USD 74,500</b></div><div class="kpi">Contingencia<b>USD 4,000</b></div><div class="kpi">BAC / presupuesto<b>USD 78,500</b></div><div class="kpi">Beneficio neto anual<b>USD 126,000</b></div></div><p class="note">Fuente: Elaboración propia.</p></div>
+<div class="card"><div class="toolbar"><button onclick="window.print()">Imprimir / Guardar PDF</button><select id="cat"><option value="all">Todas las categorías</option></select></div><h2>Requerimiento de fondos por semana</h2><div id="bars" class="bars"></div><p class="note">Fuente: Elaboración propia.</p></div>
+<div class="card"><h2>Estimación detallada</h2><div style="overflow:auto;max-height:60vh"><table><thead><tr><th>ID</th><th>Actividad</th><th>Categoría</th><th>Concepto</th><th>Método</th><th>Monto</th></tr></thead><tbody id="costbody"></tbody></table></div><p class="note">Fuente: Elaboración propia.</p></div>
+<script>const weeks=[{"week": 1, "label": "20–26 jul", "direct": 4800, "contingency": 200, "total": 5000}, {"week": 2, "label": "27 jul–2 ago", "direct": 7700, "contingency": 300, "total": 8000}, {"week": 3, "label": "3–9 ago", "direct": 15500, "contingency": 800, "total": 16300}, {"week": 4, "label": "10–16 ago", "direct": 17000, "contingency": 1000, "total": 18000}, {"week": 5, "label": "17–23 ago", "direct": 14500, "contingency": 900, "total": 15400}, {"week": 6, "label": "24–30 ago", "direct": 8000, "contingency": 500, "total": 8500}, {"week": 7, "label": "31 ago–6 sep", "direct": 4000, "contingency": 200, "total": 4200}, {"week": 8, "label": "7–13 sep", "direct": 3000, "contingency": 100, "total": 3100}];const lines=[{"id": "C01", "activity": "A25", "category": "Licenciamiento y configuración", "concept": "Licencias de plataforma para 120 agentes y ambientes del piloto", "method": "Cotización/paramétrica", "amount": 16000}, {"id": "C02", "activity": "A25", "category": "Licenciamiento y configuración", "concept": "Ambientes sandbox y producción controlada", "method": "Análoga", "amount": 3500}, {"id": "C03", "activity": "A27-A33", "category": "Licenciamiento y configuración", "concept": "Servicios de configuración funcional y ajustes del modelo", "method": "Bottom-up", "amount": 3500}, {"id": "C04", "activity": "A52", "category": "Licenciamiento y configuración", "concept": "Soporte especializado e hiperacompañamiento de lanzamiento", "method": "Bottom-up", "amount": 1000}, {"id": "C05", "activity": "A24", "category": "Integraciones y desarrollo", "concept": "Diseño de arquitectura e interfaces", "method": "Bottom-up", "amount": 1500}, {"id": "C06", "activity": "A34", "category": "Integraciones y desarrollo", "concept": "Integración con telefonía y transcripción", "method": "Cotización/3 puntos", "amount": 5000}, {"id": "C07", "activity": "A35", "category": "Integraciones y desarrollo", "concept": "Integración con SGC y resumen de caso", "method": "Cotización/3 puntos", "amount": 5000}, {"id": "C08", "activity": "A36", "category": "Integraciones y desarrollo", "concept": "Conector con base de conocimiento", "method": "Bottom-up", "amount": 3000}, {"id": "C09", "activity": "A37", "category": "Integraciones y desarrollo", "concept": "Autenticación, perfiles y permisos", "method": "Bottom-up", "amount": 1500}, {"id": "C10", "activity": "A38", "category": "Integraciones y desarrollo", "concept": "Pruebas técnicas de integración", "method": "Bottom-up", "amount": 2000}, {"id": "C11", "activity": "A16-A17", "category": "Datos y conocimiento", "concept": "Inventario, propietarios y vigencia de artículos", "method": "Bottom-up", "amount": 1000}, {"id": "C12", "activity": "A18", "category": "Datos y conocimiento", "concept": "Extracción de 3,000 interacciones", "method": "Paramétrica", "amount": 1500}, {"id": "C13", "activity": "A19", "category": "Datos y conocimiento", "concept": "Anonimización y control de privacidad del dataset", "method": "Paramétrica", "amount": 2500}, {"id": "C14", "activity": "A20,A22", "category": "Datos y conocimiento", "concept": "Taxonomía, etiquetado y control muestral", "method": "Bottom-up", "amount": 2000}, {"id": "C15", "activity": "A21", "category": "Datos y conocimiento", "concept": "Depuración y actualización de 60 artículos", "method": "Paramétrica", "amount": 2500}, {"id": "C16", "activity": "A23", "category": "Datos y conocimiento", "concept": "Validación y aprobación de datos/conocimiento", "method": "Bottom-up", "amount": 1000}, {"id": "C17", "activity": "A40", "category": "Seguridad y aseguramiento de calidad", "concept": "Evaluación de privacidad y cumplimiento", "method": "Bottom-up", "amount": 2000}, {"id": "C18", "activity": "A40-A41", "category": "Seguridad y aseguramiento de calidad", "concept": "Pruebas de seguridad y remediación", "method": "Cotización", "amount": 2500}, {"id": "C19", "activity": "A42-A44", "category": "Seguridad y aseguramiento de calidad", "concept": "Diseño, ejecución y revalidación de PAU", "method": "Bottom-up", "amount": 2000}, {"id": "C20", "activity": "A39", "category": "Seguridad y aseguramiento de calidad", "concept": "Pruebas de carga, rendimiento y latencia", "method": "Bottom-up", "amount": 1500}, {"id": "C21", "activity": "A46", "category": "Capacitación y gestión del cambio", "concept": "Plan de cambio y comunicaciones", "method": "Bottom-up", "amount": 1000}, {"id": "C22", "activity": "A47", "category": "Capacitación y gestión del cambio", "concept": "Materiales, guías y simulaciones", "method": "Bottom-up", "amount": 1500}, {"id": "C23", "activity": "A49", "category": "Capacitación y gestión del cambio", "concept": "Capacitación de supervisores", "method": "Paramétrica", "amount": 500}, {"id": "C24", "activity": "A50", "category": "Capacitación y gestión del cambio", "concept": "Capacitación de 120 agentes", "method": "Paramétrica", "amount": 2500}, {"id": "C25", "activity": "A48,A53", "category": "Capacitación y gestión del cambio", "concept": "Champions, nudges y adopción", "method": "Bottom-up", "amount": 1000}, {"id": "C26", "activity": "A51", "category": "Capacitación y gestión del cambio", "concept": "Modo sombra y evaluación de readiness", "method": "Bottom-up", "amount": 1000}, {"id": "C27", "activity": "A01-A03", "category": "Dirección del proyecto", "concept": "Inicio y consolidación del plan integrado", "method": "Bottom-up", "amount": 1200}, {"id": "C28", "activity": "A04-A05", "category": "Dirección del proyecto", "concept": "Gobernanza, comité y seguimiento ejecutivo", "method": "Bottom-up", "amount": 1500}, {"id": "C29", "activity": "A05", "category": "Dirección del proyecto", "concept": "Control de cronograma, costos y desempeño", "method": "Bottom-up", "amount": 1500}, {"id": "C30", "activity": "A61-A62", "category": "Dirección del proyecto", "concept": "Informe final, cierre y recomendación de escalamiento", "method": "Bottom-up", "amount": 1300}, {"id": "C31", "activity": "A06", "category": "Dirección del proyecto", "concept": "Gestión documental y soporte administrativo", "method": "Bottom-up", "amount": 1000}];const money=x=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(x);let c=0;const max=Math.max(...weeks.map(x=>x.total));const bars=document.getElementById('bars');weeks.forEach(w=>{c+=w.total;const g=document.createElement('div');g.className='bargrp';g.innerHTML=`<div class="bar" data-v="${money(w.total)}" style="height:${220*w.total/max}px"></div><b>S${w.week}</b><div>${w.label}</div><div class="cum">Acum. ${money(c)}</div>`;bars.appendChild(g)});const cats=[...new Set(lines.map(x=>x.category))];cats.forEach(x=>{const o=document.createElement('option');o.value=x;o.textContent=x;cat.appendChild(o)});function draw(){costbody.innerHTML='';lines.filter(x=>cat.value==='all'||x.category===cat.value).forEach(x=>{const tr=document.createElement('tr');tr.innerHTML=`<td>${x.id}</td><td>${x.activity}</td><td>${x.category}</td><td>${x.concept}</td><td>${x.method}</td><td>${money(x.amount)}</td>`;costbody.appendChild(tr)})}cat.onchange=draw;draw();</script></main></body></html>

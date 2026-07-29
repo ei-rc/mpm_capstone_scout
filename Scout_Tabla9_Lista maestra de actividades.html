@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tabla 9. Lista maestra de actividades — Scout</title>
+<style>
+:root{--navy:#1f365c;--gold:#f6b82e;--bg:#f4f6fa;--ink:#1c2430;--muted:#64748b;--line:#d7dde6;--red:#a61b1b;--soft-red:#fff0ef;--green:#166534;--soft:#eef2f7}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(110deg,var(--gold),var(--navy));color:white;padding:30px 34px}
+header h1{margin:0 0 7px;font-size:28px;line-height:1.2}header p{margin:0;max-width:1000px;opacity:.96}
+main{max-width:1600px;margin:auto;padding:22px 28px 34px}
+.card{background:white;border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:18px;box-shadow:0 3px 12px rgba(31,54,92,.08)}
+.meta{display:grid;grid-template-columns:repeat(4,minmax(160px,1fr));gap:12px}.metric{background:var(--soft);border-radius:10px;padding:13px}.metric b{display:block;font-size:22px;color:var(--navy)}.metric span{font-size:12px;color:var(--muted)}
+.toolbar{display:flex;align-items:end;gap:10px;flex-wrap:wrap}.toolbar label{font-size:12px;color:#475569;display:flex;flex-direction:column;gap:5px}
+.toolbar input,.toolbar select,.toolbar button{height:40px;padding:8px 11px;border:1px solid #c7cfda;border-radius:7px;background:white;font-size:14px}
+.toolbar input{min-width:280px}.toolbar button{cursor:pointer;background:var(--navy);color:white;border:0;font-weight:600}.toolbar button.secondary{background:#687587}.toolbar button.gold{background:#b57600}
+.status{margin-left:auto;color:var(--muted);font-size:13px;padding:10px 0}
+.table-wrap{overflow:auto;max-height:68vh;border:1px solid var(--line);border-radius:8px}
+table{width:100%;min-width:1100px;border-collapse:separate;border-spacing:0;font-size:13px}
+th{position:sticky;top:0;z-index:3;background:var(--navy);color:white;text-align:left;cursor:pointer;user-select:none}th:hover{background:#2d4c7e}th .sort{opacity:.65;margin-left:5px}
+th,td{padding:9px 10px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);vertical-align:top}th:last-child,td:last-child{border-right:0}
+tbody tr:nth-child(even){background:#f8fafc}tbody tr:hover{background:#edf4ff}tbody tr.critical{background:var(--soft-red)}tbody tr.critical:hover{background:#ffe4e1}
+.badge{display:inline-block;border-radius:999px;padding:3px 8px;font-size:11px;font-weight:700}.badge.yes{background:#fee2e2;color:var(--red)}.badge.no{background:#dcfce7;color:var(--green)}
+.pagination{display:flex;gap:8px;justify-content:center;align-items:center;margin-top:14px;flex-wrap:wrap}.pagination button{border:1px solid #c7cfda;background:white;border-radius:6px;padding:7px 10px;cursor:pointer}.pagination button.active{background:var(--navy);color:white;border-color:var(--navy)}.pagination button:disabled{opacity:.45;cursor:not-allowed}
+.note{font-size:13px;color:var(--muted);font-style:italic;margin:14px 0 0}.legend{font-size:13px;color:#475569;margin-top:10px}.legend code{background:#eef2f7;padding:2px 5px;border-radius:4px}
+a.nav{display:inline-block;color:var(--navy);font-weight:700;text-decoration:none;margin-top:8px}a.nav:hover{text-decoration:underline}
+@media(max-width:900px){main{padding:14px}header{padding:24px 18px}.meta{grid-template-columns:repeat(2,1fr)}.toolbar input{min-width:220px}.status{width:100%;margin-left:0}}
+@media print{body{background:white}header,.toolbar,.pagination{display:none!important}main{padding:0;max-width:none}.card{box-shadow:none;border:0;padding:0}.table-wrap{max-height:none;overflow:visible;border:0}table{min-width:0;font-size:9px}th{position:static}}
+
+/* --- ESTILOS DE NAVEGACIÓN GLOBAL --- */
+.global-nav {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* Botón Home */
+.btn-home {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--navy, #1f365c); /* Usa el azul marino de tu paleta */
+  color: white;
+  padding: 9px 16px;
+  border-radius: 7px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: background-color 0.2s ease;
+}
+.btn-home:hover {
+  background-color: #2d4c7e; /* Un tono más claro al pasar el mouse */
+  color: white;
+}
+
+/* Dropdown Container */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Button */
+.btn-dropdown {
+  background-color: white;
+  color: #475569;
+  padding: 9px 16px;
+  border: 1px solid #c8d0dc;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  font-family: inherit;
+}
+.btn-dropdown:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+}
+
+/* Dropdown Menu Contenido (Oculto por defecto) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 260px;
+  box-shadow: 0px 8px 16px 0px rgba(31,54,92,0.15);
+  border: 1px solid #dce2ea;
+  border-radius: 8px;
+  z-index: 100;
+  top: 110%; /* Aparece justo debajo del botón */
+  left: 0;
+  padding: 8px 0;
+}
+
+/* Mostrar el menú al hacer hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Títulos de agrupación en el menú */
+.dropdown-group {
+  padding: 8px 16px 4px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Enlaces del menú */
+.dropdown-content a {
+  color: var(--ink, #1c2430);
+  padding: 8px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.dropdown-content a:hover {
+  background-color: #edf4ff; /* Fondo azul muy suave al pasar el mouse */
+  color: var(--navy, #1f365c);
+}
+
+/* Ocultar en impresión */
+@media print {
+  .global-nav { display: none !important; }
+}
+/* ------------------------------------ */
+
+
+</style>
+</head>
+<body>
+<header>
+<h1>Tabla 9. Lista maestra de actividades</h1>
+<p>Proyecto de implementación de Scout en Everline Solutions</p>
+</header>
+<main>
+
+<!-- INCIO DE NAVEGACIÓN GLOBAL -->
+<div class="global-nav">
+  <!-- Botón Home -->
+  <a href="index.html" class="btn-home">
+    <!-- Icono de casita SVG -->
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px; vertical-align: text-bottom;">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+    Volver al Índice
+  </a>
+
+  <!-- Dropdown Menu -->
+  <div class="dropdown">
+    <button class="btn-dropdown">
+      Ir a otro anexo
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 6px; vertical-align: middle;">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+    <div class="dropdown-content">
+      <div class="dropdown-group">Alcance y Requisitos</div>
+      <a href="Scout_Tabla3_Registro_Requisitos_Interactivo.html">Registro Consolidado de Requisitos</a>
+      <a href="Scout_Tabla4_Matriz_Trazabilidad_Requisitos_Interactiva.html">Matriz de Trazabilidad</a>
+      <a href="Scout_WBS_Interactiva.html">EDT / WBS Interactiva</a>
+      
+      <div class="dropdown-group">Cronograma</div>
+      <!-- <a href="Scout_Tabla9_Lista maestra de actividades.html">Lista Maestra de Actividades</a>-->
+      <a href="Scout_Tabla10_Secuencia, dependencias y fechas de actividades.html">Secuencia y Dependencias</a>
+      <a href="Scout_Gantt_Detallado.html">Cronograma Gantt Detallado</a>
+      
+      <div class="dropdown-group">Costos</div>
+      <a href="Scout_Tabla15_Estimacion_Costos_Actividad_Interactiva.html">Estimación Detallada de Costos</a>
+      <a href="Scout_Linea_Base_Costos.html">Línea Base de Costos</a>
+    </div>
+  </div>
+</div>
+<!-- FIN DE NAVEGACIÓN GLOBAL -->
+
+
+<section class="card">
+<p>La tabla reúne las actividades derivadas de la EDT, su responsable principal, la evidencia esperada y su condición de criticidad dentro de la línea base del cronograma.</p>
+<div class="meta">
+<div class="metric"><b>68</b><span>registros totales</span></div>
+<div class="metric"><b>44</b><span>actividades críticas</span></div>
+<div class="metric"><b>8 semanas</b><span>duración del piloto</span></div>
+<div class="metric"><b>20/07–13/09</b><span>calendario 2026</span></div>
+</div>
+</section>
+<section class="card">
+<div class="toolbar">
+<label>Buscar<input id="search" type="search" placeholder="ID, actividad, responsable o evidencia"></label>
+<label>EDT<select id="filter_edt"><option value="">Todos</option></select></label><label>Responsable<select id="filter_responsable"><option value="">Todos</option></select></label>
+<label>Criticidad<select id="filter_critical"><option value="">Todas</option><option value="Sí">Solo críticas</option><option value="No">No críticas</option></select></label>
+<label>Filas<select id="page_size"><option>15</option><option selected>25</option><option>50</option><option value="0">Todas</option></select></label>
+<button id="reset" class="secondary">Restablecer</button>
+<div id="status" class="status"></div>
+</div>
+</section>
+<section class="card">
+<div class="table-wrap"><table id="data_table"><thead><tr><th data-key="ID">ID <span class="sort">↕</span></th><th data-key="EDT">EDT <span class="sort">↕</span></th><th data-key="Actividad">Actividad <span class="sort">↕</span></th><th data-key="Responsable">Responsable <span class="sort">↕</span></th><th data-key="Entregable / evidencia">Entregable / evidencia <span class="sort">↕</span></th><th data-key="Crítica">Crítica <span class="sort">↕</span></th></tr></thead><tbody></tbody></table></div>
+<div id="pagination" class="pagination"></div>
+<p class="note">Fuente: Elaboración propia. Información ficticia preparada exclusivamente para fines académicos. Recurso digital complementario del Capítulo 2 — Planificación.</p>
+
+</section>
+</main>
+<script>
+const DATA=[{"_row": 1, "ID": "A01", "EDT": "1.1.1", "Actividad": "Realizar reunión de lanzamiento y confirmar mandato", "Responsable": "Gerente de proyecto / Patrocinador", "Entregable / evidencia": "Acta de kickoff y acuerdos iniciales", "Crítica": "Sí"}, {"_row": 2, "ID": "A02", "EDT": "1.1.2", "Actividad": "Identificar y analizar interesados del piloto", "Responsable": "Gerente de proyecto", "Entregable / evidencia": "Registro inicial de interesados", "Crítica": "No"}, {"_row": 3, "ID": "A03", "EDT": "1.1.3", "Actividad": "Consolidar el plan para la dirección del proyecto", "Responsable": "Gerente de proyecto / Líderes", "Entregable / evidencia": "Plan integrado aprobado para ejecución", "Crítica": "Sí"}, {"_row": 4, "ID": "A04", "EDT": "1.1.4", "Actividad": "Configurar gobernanza, control de cambios y repositorio", "Responsable": "Gerente de proyecto / PMO", "Entregable / evidencia": "Flujo de gobernanza y control", "Crítica": "No"}, {"_row": 5, "ID": "A05", "EDT": "1.1.5", "Actividad": "Monitorear alcance, cronograma, costo y decisiones", "Responsable": "Gerente de proyecto", "Entregable / evidencia": "Informes semanales y registro de decisiones", "Crítica": "No"}, {"_row": 6, "ID": "A06", "EDT": "1.1.6", "Actividad": "Administrar documentación, actas y evidencias", "Responsable": "Coordinación del proyecto", "Entregable / evidencia": "Expediente actualizado del proyecto", "Crítica": "No"}, {"_row": 7, "ID": "A07", "EDT": "2.1.1", "Actividad": "Confirmar indicadores, fórmulas y fuentes de línea base", "Responsable": "Analista de datos / Calidad", "Entregable / evidencia": "Catálogo de ocho indicadores", "Crítica": "Sí"}, {"_row": 8, "ID": "A08", "EDT": "2.1.2", "Actividad": "Extraer datos históricos y segmentar grupo de comparación", "Responsable": "Analista de datos", "Entregable / evidencia": "Dataset de línea base", "Crítica": "Sí"}, {"_row": 9, "ID": "A09", "EDT": "2.1.3", "Actividad": "Validar línea base con Operaciones, Calidad y Finanzas", "Responsable": "Operaciones / Calidad / Finanzas", "Entregable / evidencia": "Línea base aprobada", "Crítica": "Sí"}, {"_row": 10, "ID": "A10", "EDT": "2.1.4", "Actividad": "Mapear el proceso actual y puntos de decisión del agente", "Responsable": "Analista de procesos / Agentes", "Entregable / evidencia": "Mapa AS-IS y puntos de dolor", "Crítica": "No"}, {"_row": 11, "ID": "A11", "EDT": "2.1.5", "Actividad": "Priorizar los 20 motivos de contacto del piloto", "Responsable": "Operaciones / Calidad", "Entregable / evidencia": "Catálogo priorizado de motivos", "Crítica": "Sí"}, {"_row": 12, "ID": "A12", "EDT": "2.2.1", "Actividad": "Ejecutar entrevistas y talleres de requisitos", "Responsable": "Analista de negocio / Product Owner", "Entregable / evidencia": "Minutas y necesidades consolidadas", "Crítica": "Sí"}, {"_row": 13, "ID": "A13", "EDT": "2.2.2", "Actividad": "Documentar, clasificar y priorizar requisitos", "Responsable": "Analista de negocio", "Entregable / evidencia": "Registro de requisitos", "Crítica": "Sí"}, {"_row": 14, "ID": "A14", "EDT": "2.2.3", "Actividad": "Prototipar la experiencia del sidebar y validar usabilidad", "Responsable": "UX / Agentes / Supervisores", "Entregable / evidencia": "Prototipo validado", "Crítica": "No"}, {"_row": 15, "ID": "A15", "EDT": "2.2.4", "Actividad": "Validar alcance, exclusiones y criterios de aceptación", "Responsable": "Comité directivo / Cliente", "Entregable / evidencia": "Enunciado del alcance aprobado", "Crítica": "Sí"}, {"_row": 16, "ID": "M01", "EDT": "2.2.5", "Actividad": "Hito: diagnóstico y alcance aprobados", "Responsable": "Operaciones / Cliente", "Entregable / evidencia": "Aprobación de semana 2", "Crítica": "Sí"}, {"_row": 17, "ID": "A16", "EDT": "3.1.1", "Actividad": "Inventariar los 60 artículos de conocimiento", "Responsable": "Knowledge Manager", "Entregable / evidencia": "Inventario de artículos", "Crítica": "No"}, {"_row": 18, "ID": "A17", "EDT": "3.1.2", "Actividad": "Asignar propietarios, vigencia y control de versiones", "Responsable": "Knowledge Manager / Calidad", "Entregable / evidencia": "Matriz de propietarios y vigencia", "Crítica": "No"}, {"_row": 19, "ID": "A18", "EDT": "3.2.1", "Actividad": "Extraer 3,000 interacciones históricas", "Responsable": "Datos / TI", "Entregable / evidencia": "Muestra histórica extraída", "Crítica": "Sí"}, {"_row": 20, "ID": "A19", "EDT": "3.2.2", "Actividad": "Anonimizar y aplicar controles de privacidad", "Responsable": "Datos / Seguridad / Legal", "Entregable / evidencia": "Dataset anonimizado", "Crítica": "Sí"}, {"_row": 21, "ID": "A20", "EDT": "3.2.3", "Actividad": "Definir taxonomía, etiquetas e intención objetivo", "Responsable": "Calidad / Datos", "Entregable / evidencia": "Taxonomía aprobada", "Crítica": "Sí"}, {"_row": 22, "ID": "A21", "EDT": "3.3.1", "Actividad": "Depurar, actualizar y normalizar artículos", "Responsable": "Knowledge Manager / SMEs", "Entregable / evidencia": "60 artículos depurados", "Crítica": "Sí"}, {"_row": 23, "ID": "A22", "EDT": "3.3.2", "Actividad": "Etiquetar y validar muestra de entrenamiento", "Responsable": "Calidad / Datos", "Entregable / evidencia": "Muestra etiquetada y controlada", "Crítica": "Sí"}, {"_row": 24, "ID": "A23", "EDT": "3.3.3", "Actividad": "Aprobar base de conocimiento y dataset de configuración", "Responsable": "Calidad / Seguridad / Cliente", "Entregable / evidencia": "Datos y conocimiento aprobados", "Crítica": "Sí"}, {"_row": 25, "ID": "A24", "EDT": "4.1.1", "Actividad": "Diseñar arquitectura e interfaces de integración", "Responsable": "Arquitecto de solución", "Entregable / evidencia": "Diseño de arquitectura", "Crítica": "No"}, {"_row": 26, "ID": "A25", "EDT": "4.1.2", "Actividad": "Provisionar ambientes, accesos y licencias del piloto", "Responsable": "Proveedor / TI", "Entregable / evidencia": "Ambientes habilitados", "Crítica": "Sí"}, {"_row": 27, "ID": "A26", "EDT": "4.1.3", "Actividad": "Completar diseño funcional y visual del sidebar", "Responsable": "UX / Product Owner", "Entregable / evidencia": "Especificación de interfaz", "Crítica": "No"}, {"_row": 28, "ID": "A27", "EDT": "4.2.1", "Actividad": "Configurar modelo base y parámetros del piloto", "Responsable": "Proveedor / Datos", "Entregable / evidencia": "Modelo base configurado", "Crítica": "Sí"}, {"_row": 29, "ID": "A28", "EDT": "4.2.2", "Actividad": "Configurar intenciones y entidades prioritarias", "Responsable": "Datos / Calidad", "Entregable / evidencia": "Intenciones y entidades configuradas", "Crítica": "Sí"}, {"_row": 30, "ID": "A29", "EDT": "4.2.3", "Actividad": "Configurar reglas de siguiente mejor acción", "Responsable": "Product Owner / SMEs", "Entregable / evidencia": "Reglas NBA configuradas", "Crítica": "Sí"}, {"_row": 31, "ID": "A30", "EDT": "4.2.4", "Actividad": "Configurar scripts, prompts y plantillas editables", "Responsable": "Calidad / Formación", "Entregable / evidencia": "Biblioteca de guiones", "Crítica": "No"}, {"_row": 32, "ID": "A31", "EDT": "4.2.5", "Actividad": "Configurar señales de sentimiento y riesgo", "Responsable": "Calidad / Riesgos", "Entregable / evidencia": "Alertas configuradas", "Crítica": "No"}, {"_row": 33, "ID": "A32", "EDT": "4.2.6", "Actividad": "Configurar resumen, disposición y retroalimentación", "Responsable": "Product Owner / TI", "Entregable / evidencia": "Resumen y feedback habilitados", "Crítica": "No"}, {"_row": 34, "ID": "A33", "EDT": "4.2.7", "Actividad": "Revisar precisión y completar ajuste de configuración", "Responsable": "Calidad / Datos / Product Owner", "Entregable / evidencia": "Versión candidata para pruebas", "Crítica": "Sí"}, {"_row": 35, "ID": "M02", "EDT": "4.2.8", "Actividad": "Hito: modelo y reglas listos para PAU", "Responsable": "Calidad / Datos / Seguridad", "Entregable / evidencia": "Aprobación de semana 4", "Crítica": "Sí"}, {"_row": 36, "ID": "A34", "EDT": "5.1.1", "Actividad": "Desarrollar integración con telefonía y transcripción", "Responsable": "TI / Proveedor", "Entregable / evidencia": "Flujo de audio y transcripción", "Crítica": "Sí"}, {"_row": 37, "ID": "A35", "EDT": "5.1.2", "Actividad": "Desarrollar integración con SGC y resumen de caso", "Responsable": "TI / Proveedor", "Entregable / evidencia": "Contexto y borrador de resumen", "Crítica": "Sí"}, {"_row": 38, "ID": "A36", "EDT": "5.1.3", "Actividad": "Integrar repositorio de conocimiento validado", "Responsable": "TI / Knowledge Manager", "Entregable / evidencia": "Conector de conocimiento", "Crítica": "No"}, {"_row": 39, "ID": "A37", "EDT": "5.1.4", "Actividad": "Configurar autenticación, perfiles y permisos", "Responsable": "TI / Seguridad", "Entregable / evidencia": "Matriz de accesos aplicada", "Crítica": "No"}, {"_row": 40, "ID": "A38", "EDT": "5.2.1", "Actividad": "Ejecutar pruebas unitarias y de integración", "Responsable": "TI / Proveedor", "Entregable / evidencia": "Resultados de pruebas técnicas", "Crítica": "Sí"}, {"_row": 41, "ID": "A39", "EDT": "5.2.2", "Actividad": "Ejecutar pruebas de rendimiento, carga y latencia", "Responsable": "TI / Proveedor", "Entregable / evidencia": "Informe de rendimiento", "Crítica": "No"}, {"_row": 42, "ID": "A40", "EDT": "5.2.3", "Actividad": "Completar evaluación de privacidad y seguridad", "Responsable": "Seguridad / Legal", "Entregable / evidencia": "Aprobación de privacidad y seguridad", "Crítica": "Sí"}, {"_row": 43, "ID": "A41", "EDT": "5.2.4", "Actividad": "Corregir defectos técnicos y de seguridad", "Responsable": "TI / Proveedor", "Entregable / evidencia": "Defectos críticos cerrados", "Crítica": "Sí"}, {"_row": 44, "ID": "A42", "EDT": "5.3.1", "Actividad": "Diseñar casos y criterios de PAU", "Responsable": "Calidad / Product Owner", "Entregable / evidencia": "Plan de PAU", "Crítica": "No"}, {"_row": 45, "ID": "A43", "EDT": "5.3.2", "Actividad": "Ejecutar Pruebas de Aceptación del Usuario", "Responsable": "Agentes / Supervisores / Cliente", "Entregable / evidencia": "Resultados de PAU", "Crítica": "Sí"}, {"_row": 46, "ID": "A44", "EDT": "5.3.3", "Actividad": "Corregir hallazgos y ejecutar revalidación", "Responsable": "TI / Product Owner", "Entregable / evidencia": "PAU aprobada", "Crítica": "Sí"}, {"_row": 47, "ID": "A45", "EDT": "5.3.4", "Actividad": "Consolidar paquete de preparación y recomendación go/no-go", "Responsable": "Gerente de proyecto", "Entregable / evidencia": "Paquete de decisión", "Crítica": "Sí"}, {"_row": 48, "ID": "M03", "EDT": "5.3.5", "Actividad": "Hito: PAU, capacitación y go/no-go aprobados", "Responsable": "Comité directivo", "Entregable / evidencia": "Autorización del piloto", "Crítica": "Sí"}, {"_row": 49, "ID": "A46", "EDT": "6.1.1", "Actividad": "Preparar plan de cambio, comunicaciones y soporte", "Responsable": "Change Manager", "Entregable / evidencia": "Plan de adopción", "Crítica": "No"}, {"_row": 50, "ID": "A47", "EDT": "6.1.2", "Actividad": "Desarrollar materiales, guías y simulaciones", "Responsable": "Formación / Calidad", "Entregable / evidencia": "Kit de capacitación", "Crítica": "No"}, {"_row": 51, "ID": "A48", "EDT": "6.1.3", "Actividad": "Seleccionar y preparar champions operativos", "Responsable": "Operaciones / Formación", "Entregable / evidencia": "Red de champions", "Crítica": "No"}, {"_row": 52, "ID": "A49", "EDT": "6.2.1", "Actividad": "Capacitar supervisores y equipo de soporte", "Responsable": "Formación / Product Owner", "Entregable / evidencia": "Supervisores capacitados", "Crítica": "No"}, {"_row": 53, "ID": "A50", "EDT": "6.2.2", "Actividad": "Capacitar agentes y completar evaluación de aprendizaje", "Responsable": "Formación / Supervisores", "Entregable / evidencia": "≥95% de usuarios capacitados", "Crítica": "Sí"}, {"_row": 54, "ID": "A51", "EDT": "6.2.3", "Actividad": "Ejecutar modo sombra y encuesta de preparación", "Responsable": "Operaciones / Agentes", "Entregable / evidencia": "Readiness y ajustes finales", "Crítica": "Sí"}, {"_row": 55, "ID": "M04", "EDT": "6.3.1", "Actividad": "Hito: lanzamiento controlado del piloto", "Responsable": "Operaciones / Cliente", "Entregable / evidencia": "Piloto en producción controlada", "Crítica": "Sí"}, {"_row": 56, "ID": "A52", "EDT": "6.3.2", "Actividad": "Ejecutar hiperacompañamiento de lanzamiento", "Responsable": "Proveedor / TI / Champions", "Entregable / evidencia": "Incidentes y dudas atendidos", "Crítica": "Sí"}, {"_row": 57, "ID": "A53", "EDT": "6.3.3", "Actividad": "Aplicar nudges de adopción y coaching focalizado", "Responsable": "Supervisores / Formación", "Entregable / evidencia": "Adopción sostenida", "Crítica": "No"}, {"_row": 58, "ID": "A54", "EDT": "6.3.4", "Actividad": "Estabilizar operación y cerrar incidencias prioritarias", "Responsable": "TI / Operaciones", "Entregable / evidencia": "Piloto estabilizado", "Crítica": "Sí"}, {"_row": 59, "ID": "M05", "EDT": "6.3.5", "Actividad": "Hito: piloto estabilizado", "Responsable": "Operaciones", "Entregable / evidencia": "Aprobación de semana 7", "Crítica": "Sí"}, {"_row": 60, "ID": "A55", "EDT": "7.1.1", "Actividad": "Capturar resultados de KPIs y disponibilidad", "Responsable": "Datos / Calidad", "Entregable / evidencia": "Serie de resultados del piloto", "Crítica": "Sí"}, {"_row": 61, "ID": "A56", "EDT": "7.1.2", "Actividad": "Medir adopción, utilidad y retroalimentación", "Responsable": "Change Manager / Product Owner", "Entregable / evidencia": "Informe de adopción", "Crítica": "No"}, {"_row": 62, "ID": "A57", "EDT": "7.2.1", "Actividad": "Comparar piloto contra línea base y grupo de referencia", "Responsable": "Datos / Calidad", "Entregable / evidencia": "Análisis comparativo", "Crítica": "Sí"}, {"_row": 63, "ID": "A58", "EDT": "7.2.2", "Actividad": "Validar resultados operativos con áreas responsables", "Responsable": "Operaciones / Calidad / Cliente", "Entregable / evidencia": "Resultados validados", "Crítica": "Sí"}, {"_row": 64, "ID": "A59", "EDT": "7.2.3", "Actividad": "Actualizar caso financiero, B/C y payback", "Responsable": "Finanzas / Gerente de proyecto", "Entregable / evidencia": "Caso de negocio actualizado", "Crítica": "Sí"}, {"_row": 65, "ID": "A60", "EDT": "7.2.4", "Actividad": "Consolidar lecciones aprendidas y recomendaciones", "Responsable": "Equipo del proyecto", "Entregable / evidencia": "Registro de lecciones", "Crítica": "No"}, {"_row": 66, "ID": "A61", "EDT": "7.3.1", "Actividad": "Preparar informe final y recomendación de escalamiento", "Responsable": "Gerente de proyecto", "Entregable / evidencia": "Informe final", "Crítica": "Sí"}, {"_row": 67, "ID": "A62", "EDT": "7.3.2", "Actividad": "Preparar presentación ejecutiva y paquete de cierre", "Responsable": "Gerente de proyecto", "Entregable / evidencia": "Paquete ejecutivo", "Crítica": "Sí"}, {"_row": 68, "ID": "M06", "EDT": "7.3.3", "Actividad": "Hito: cierre y decisión ejecutiva de escalamiento", "Responsable": "Patrocinador / Cliente", "Entregable / evidencia": "Cierre del piloto", "Crítica": "Sí"}];
+const FIELDS=["ID", "EDT", "Actividad", "Responsable", "Entregable / evidencia", "Crítica"];
+const FILTER_KEYS=["EDT", "Responsable"];
+let state={sortKey:'ID',sortDir:1,page:1};
+const normalize=v=>(v??'').toString().normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+const parseDate=v=>{const m=(v||'').match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);return m?new Date(+m[3],+m[2]-1,+m[1]).getTime():NaN};
+function filterId(key){return 'filter_'+normalize(key).replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'')}
+function populateFilters(){FILTER_KEYS.forEach(key=>{const sel=document.getElementById(filterId(key));[...new Set(DATA.map(r=>r[key]).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es')).forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;sel.appendChild(o)})})}
+function filtered(){const q=normalize(document.getElementById('search').value);const crit=document.getElementById('filter_critical').value;let rows=DATA.filter(r=>{if(q&&!FIELDS.some(k=>normalize(r[k]).includes(q)))return false;if(crit&&normalize(r['Crítica'])!==normalize(crit))return false;for(const k of FILTER_KEYS){const v=document.getElementById(filterId(k)).value;if(v&&r[k]!==v)return false}return true});const key=state.sortKey;rows.sort((a,b)=>{let av=a[key]??'',bv=b[key]??'';if(key==='Inicio'||key==='Fin'){const ad=parseDate(av),bd=parseDate(bv);if(!Number.isNaN(ad)&&!Number.isNaN(bd))return (ad-bd)*state.sortDir}const an=parseFloat(av),bn=parseFloat(bv);if(!Number.isNaN(an)&&!Number.isNaN(bn)&&String(av).match(/^\d/)&&String(bv).match(/^\d/))return(an-bn)*state.sortDir;return String(av).localeCompare(String(bv),'es',{numeric:true})*state.sortDir});return rows}
+function badge(v){const yes=['si','sí','yes'].includes(normalize(v));return `<span class="badge ${yes?'yes':'no'}">${yes?'Sí':'No'}</span>`}
+function render(){const rows=filtered();const size=+document.getElementById('page_size').value;const pages=size?Math.max(1,Math.ceil(rows.length/size)):1;if(state.page>pages)state.page=pages;const shown=size?rows.slice((state.page-1)*size,state.page*size):rows;const tb=document.querySelector('#data_table tbody');tb.innerHTML='';shown.forEach(r=>{const tr=document.createElement('tr');if(['si','sí','yes'].includes(normalize(r['Crítica'])))tr.className='critical';FIELDS.forEach(k=>{const td=document.createElement('td');if(k==='Crítica')td.innerHTML=badge(r[k]);else td.textContent=r[k];tr.appendChild(td)});tb.appendChild(tr)});document.getElementById('status').textContent=`Mostrando ${shown.length} de ${rows.length} registros`;renderPagination(pages);document.querySelectorAll('th').forEach(th=>{const s=th.querySelector('.sort');s.textContent=th.dataset.key===state.sortKey?(state.sortDir===1?'↑':'↓'):'↕'})}
+function renderPagination(pages){const box=document.getElementById('pagination');box.innerHTML='';if(pages<=1)return;const add=(txt,page,disabled=false,active=false)=>{const b=document.createElement('button');b.textContent=txt;b.disabled=disabled;b.className=active?'active':'';b.onclick=()=>{state.page=page;render();document.querySelector('.table-wrap').scrollTop=0};box.appendChild(b)};add('Anterior',Math.max(1,state.page-1),state.page===1);const lo=Math.max(1,state.page-2),hi=Math.min(pages,state.page+2);for(let p=lo;p<=hi;p++)add(String(p),p,false,p===state.page);add('Siguiente',Math.min(pages,state.page+1),state.page===pages)}
+document.querySelectorAll('th').forEach(th=>th.onclick=()=>{const key=th.dataset.key;if(state.sortKey===key)state.sortDir*=-1;else{state.sortKey=key;state.sortDir=1}state.page=1;render()});
+document.getElementById('search').oninput=()=>{state.page=1;render()};document.getElementById('filter_critical').onchange=()=>{state.page=1;render()};document.getElementById('page_size').onchange=()=>{state.page=1;render()};
+FILTER_KEYS.forEach(k=>document.getElementById(filterId(k)).onchange=()=>{state.page=1;render()});
+document.getElementById('reset').onclick=()=>{document.getElementById('search').value='';document.getElementById('filter_critical').value='';FILTER_KEYS.forEach(k=>document.getElementById(filterId(k)).value='');document.getElementById('page_size').value='25';state={sortKey:'ID',sortDir:1,page:1};render()};
+populateFilters();render();
+</script>
+</body></html>

@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tabla 3. Registro consolidado de requisitos — Scout</title>
+<style>
+:root{--navy:#1f365c;--gold:#f6b82e;--bg:#f4f6fa;--ink:#1c2430;--muted:#64748b;--line:#d7dde6;--soft:#eef2f7;--must:#991b1b;--must-bg:#fee2e2;--should:#854d0e;--should-bg:#fef3c7;--blue:#1d4ed8;--blue-bg:#dbeafe}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(110deg,var(--gold),var(--navy));color:#fff;padding:30px 34px}
+header h1{margin:0 0 7px;font-size:28px;line-height:1.2}header p{margin:0;max-width:1050px;opacity:.96}
+main{max-width:1720px;margin:auto;padding:22px 28px 34px}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:18px;box-shadow:0 3px 12px rgba(31,54,92,.08)}
+.intro{line-height:1.55;margin-top:0}
+.meta{display:grid;grid-template-columns:repeat(4,minmax(170px,1fr));gap:12px}
+.metric{background:var(--soft);border-radius:10px;padding:13px}.metric b{display:block;font-size:22px;color:var(--navy)}.metric span{font-size:12px;color:var(--muted)}
+.toolbar{display:flex;align-items:end;gap:10px;flex-wrap:wrap}.toolbar label{font-size:12px;color:#475569;display:flex;flex-direction:column;gap:5px}
+.toolbar input,.toolbar select,.toolbar button{height:40px;padding:8px 11px;border:1px solid #c7cfda;border-radius:7px;background:#fff;font-size:14px}
+.toolbar input{min-width:300px}.toolbar button{cursor:pointer;background:#687587;color:#fff;border:0;font-weight:600}
+.status{margin-left:auto;color:var(--muted);font-size:13px;padding:10px 0}
+.table-wrap{overflow:auto;max-height:68vh;border:1px solid var(--line);border-radius:8px}
+table{width:100%;min-width:1650px;border-collapse:separate;border-spacing:0;font-size:13px}
+th{position:sticky;top:0;z-index:3;background:var(--navy);color:#fff;text-align:left;cursor:pointer;user-select:none}th:hover{background:#2d4c7e}th .sort{opacity:.65;margin-left:5px}
+th,td{padding:9px 10px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);vertical-align:top}th:last-child,td:last-child{border-right:0}
+tbody tr:nth-child(even){background:#f8fafc}tbody tr:hover{background:#edf4ff}
+.badge{display:inline-block;border-radius:999px;padding:3px 8px;font-size:11px;font-weight:700;white-space:nowrap}
+.badge.must{background:var(--must-bg);color:var(--must)}.badge.should{background:var(--should-bg);color:var(--should)}.badge.type{background:var(--blue-bg);color:var(--blue)}
+.pagination{display:flex;gap:8px;justify-content:center;align-items:center;margin-top:14px;flex-wrap:wrap}.pagination button{border:1px solid #c7cfda;background:#fff;border-radius:6px;padding:7px 10px;cursor:pointer}.pagination button.active{background:var(--navy);color:#fff;border-color:var(--navy)}.pagination button:disabled{opacity:.45;cursor:not-allowed}
+.note{font-size:13px;color:var(--muted);font-style:italic;margin:14px 0 0}
+@media(max-width:900px){main{padding:14px}header{padding:24px 18px}.meta{grid-template-columns:repeat(2,1fr)}.toolbar input{min-width:220px}.status{width:100%;margin-left:0}}
+@media print{body{background:#fff}header,.toolbar,.pagination{display:none!important}main{padding:0;max-width:none}.card{box-shadow:none;border:0;padding:0}.table-wrap{max-height:none;overflow:visible;border:0}table{min-width:0;font-size:8px}th{position:static}}
+
+/* --- ESTILOS DE NAVEGACIÓN GLOBAL --- */
+.global-nav {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* Botón Home */
+.btn-home {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--navy, #1f365c); /* Usa el azul marino de tu paleta */
+  color: white;
+  padding: 9px 16px;
+  border-radius: 7px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: background-color 0.2s ease;
+}
+.btn-home:hover {
+  background-color: #2d4c7e; /* Un tono más claro al pasar el mouse */
+  color: white;
+}
+
+/* Dropdown Container */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Button */
+.btn-dropdown {
+  background-color: white;
+  color: #475569;
+  padding: 9px 16px;
+  border: 1px solid #c8d0dc;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  font-family: inherit;
+}
+.btn-dropdown:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+}
+
+/* Dropdown Menu Contenido (Oculto por defecto) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 260px;
+  box-shadow: 0px 8px 16px 0px rgba(31,54,92,0.15);
+  border: 1px solid #dce2ea;
+  border-radius: 8px;
+  z-index: 100;
+  top: 110%; /* Aparece justo debajo del botón */
+  left: 0;
+  padding: 8px 0;
+}
+
+/* Mostrar el menú al hacer hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Títulos de agrupación en el menú */
+.dropdown-group {
+  padding: 8px 16px 4px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Enlaces del menú */
+.dropdown-content a {
+  color: var(--ink, #1c2430);
+  padding: 8px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.dropdown-content a:hover {
+  background-color: #edf4ff; /* Fondo azul muy suave al pasar el mouse */
+  color: var(--navy, #1f365c);
+}
+
+/* Ocultar en impresión */
+@media print {
+  .global-nav { display: none !important; }
+}
+/* ------------------------------------ */
+
+
+</style>
+</head>
+<body>
+<header>
+<h1>Tabla 3. Registro consolidado de requisitos</h1>
+<p>Proyecto de implementación de Scout en Everline Solutions</p>
+</header>
+<main>
+
+<!-- INCIO DE NAVEGACIÓN GLOBAL -->
+<div class="global-nav">
+  <!-- Botón Home -->
+  <a href="index.html" class="btn-home">
+    <!-- Icono de casita SVG -->
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px; vertical-align: text-bottom;">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+    Volver al Índice
+  </a>
+
+  <!-- Dropdown Menu -->
+  <div class="dropdown">
+    <button class="btn-dropdown">
+      Ir a otro anexo
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 6px; vertical-align: middle;">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+    <div class="dropdown-content">
+      <div class="dropdown-group">Alcance y Requisitos</div>
+      <!--<a href="Scout_Tabla3_Registro_Requisitos_Interactivo.html">Registro Consolidado de Requisitos</a>-->
+      
+      <a href="Scout_Tabla4_Matriz_Trazabilidad_Requisitos_Interactiva.html">Matriz de Trazabilidad</a>
+      <a href="Scout_WBS_Interactiva.html">EDT / WBS Interactiva</a>
+      
+      <div class="dropdown-group">Cronograma</div>
+      <a href="Scout_Tabla9_Lista maestra de actividades.html">Lista Maestra de Actividades</a>
+      <a href="Scout_Tabla10_Secuencia, dependencias y fechas de actividades.html">Secuencia y Dependencias</a>
+      <a href="Scout_Gantt_Detallado.html">Cronograma Gantt Detallado</a>
+      <div class="dropdown-group">Costos</div>
+      <a href="Scout_Tabla15_Estimacion_Costos_Actividad_Interactiva.html">Estimación Detallada de Costos</a>
+      <a href="Scout_Linea_Base_Costos.html">Línea Base de Costos</a>
+    </div>
+  </div>
+</div>
+<!-- FIN DE NAVEGACIÓN GLOBAL -->
+
+
+<section class="card">
+<p class="intro">El registro consolida los requisitos de negocio, interesados, funcionales, no funcionales, de transición y del proyecto. Cada requisito incluye prioridad, propietario, criterio de aceptación, vínculo con la EDT y método de verificación para facilitar su trazabilidad y control durante el piloto.</p>
+<div class="meta">
+<div class="metric"><b>36</b><span>requisitos totales</span></div>
+<div class="metric"><b>30</b><span>requisitos Must</span></div>
+<div class="metric"><b>6</b><span>requisitos Should</span></div>
+<div class="metric"><b>6</b><span>categorías de requisitos</span></div>
+</div>
+</section>
+<section class="card">
+<div class="toolbar">
+<label>Buscar<input id="search" type="search" placeholder="ID, requisito, propietario o criterio"></label>
+<label>Tipo<select id="filter_tipo"><option value="">Todos</option></select></label>
+<label>Prioridad<select id="filter_prioridad"><option value="">Todas</option></select></label>
+<label>Propietario<select id="filter_propietario"><option value="">Todos</option></select></label>
+<label>EDT<select id="filter_edt"><option value="">Todas</option></select></label>
+<label>Filas<select id="page_size"><option>10</option><option selected>20</option><option>30</option><option value="0">Todas</option></select></label>
+<button id="reset">Restablecer</button>
+<div id="status" class="status"></div>
+</div>
+</section>
+<section class="card">
+<div class="table-wrap"><table id="data_table"><thead><tr>
+<th data-key="ID">ID <span class="sort">↕</span></th>
+<th data-key="Tipo">Tipo <span class="sort">↕</span></th>
+<th data-key="Requisito">Requisito <span class="sort">↕</span></th>
+<th data-key="Prioridad">Prioridad <span class="sort">↕</span></th>
+<th data-key="Propietario">Propietario <span class="sort">↕</span></th>
+<th data-key="Criterio de aceptación">Criterio de aceptación <span class="sort">↕</span></th>
+<th data-key="EDT">EDT <span class="sort">↕</span></th>
+<th data-key="Verificación">Verificación <span class="sort">↕</span></th>
+</tr></thead><tbody></tbody></table></div>
+<div id="pagination" class="pagination"></div>
+<p class="note">Fuente: Elaboración propia. Información ficticia preparada exclusivamente para fines académicos. Recurso digital complementario del Capítulo 2 — Planificación.</p>
+</section>
+</main>
+<script>
+const DATA=[{"ID": "BR-01", "Tipo": "Negocio", "Requisito": "Mantener el cumplimiento de los SLA contractuales durante y después del piloto.", "Prioridad": "Must", "Propietario": "Patrocinador", "Criterio de aceptación": "Nivel de servicio ≥85% al cierre.", "EDT": "7.2", "Verificación": "Prueba de resultados", "_row": 1}, {"ID": "BR-02", "Tipo": "Negocio", "Requisito": "Validar un beneficio neto anualizado mínimo de USD 120,000.", "Prioridad": "Must", "Propietario": "Finanzas", "Criterio de aceptación": "Caso financiero aprobado por Finanzas.", "EDT": "7.2", "Verificación": "Revisión financiera", "_row": 2}, {"ID": "BR-03", "Tipo": "Negocio", "Requisito": "Limitar el piloto a una cuenta, canal de voz, 120 agentes y 8 supervisores.", "Prioridad": "Must", "Propietario": "Operaciones", "Criterio de aceptación": "Cobertura coincidente con el alcance aprobado.", "EDT": "2.2", "Verificación": "Inspección", "_row": 3}, {"ID": "BR-04", "Tipo": "Negocio", "Requisito": "Mantener supervisión humana sobre todas las recomendaciones de Scout.", "Prioridad": "Must", "Propietario": "Cliente / Legal", "Criterio de aceptación": "Ninguna acción transaccional autónoma habilitada.", "EDT": "4.2", "Verificación": "Prueba funcional", "_row": 4}, {"ID": "SR-01", "Tipo": "Interesado", "Requisito": "Mostrar recomendaciones sin ocultar la pantalla principal del agente.", "Prioridad": "Must", "Propietario": "Agentes", "Criterio de aceptación": "Validación de usabilidad ≥4/5.", "EDT": "4.1", "Verificación": "PAU", "_row": 5}, {"ID": "SR-02", "Tipo": "Interesado", "Requisito": "Permitir que el agente acepte, edite o descarte cada sugerencia.", "Prioridad": "Must", "Propietario": "Agentes", "Criterio de aceptación": "Tres opciones disponibles y auditables.", "EDT": "4.2", "Verificación": "PAU", "_row": 6}, {"ID": "SR-03", "Tipo": "Interesado", "Requisito": "Proporcionar al supervisor visibilidad de adopción y principales motivos de descarte.", "Prioridad": "Should", "Propietario": "Supervisores", "Criterio de aceptación": "Reporte semanal disponible.", "EDT": "7.1", "Verificación": "Demostración", "_row": 7}, {"ID": "SR-04", "Tipo": "Interesado", "Requisito": "Permitir al cliente revisar fuentes, métricas y resultados del piloto.", "Prioridad": "Must", "Propietario": "Cliente", "Criterio de aceptación": "Paquete de evidencia aprobado.", "EDT": "7.3", "Verificación": "Revisión documental", "_row": 8}, {"ID": "FR-01", "Tipo": "Funcional", "Requisito": "Transcribir la conversación de voz en tiempo real.", "Prioridad": "Must", "Propietario": "Operaciones", "Criterio de aceptación": "Transcripción disponible durante la llamada.", "EDT": "5.1", "Verificación": "Prueba técnica", "_row": 9}, {"ID": "FR-02", "Tipo": "Funcional", "Requisito": "Detectar la intención principal dentro de los 20 motivos priorizados.", "Prioridad": "Must", "Propietario": "Calidad", "Criterio de aceptación": "Precisión mínima de 85%.", "EDT": "4.2", "Verificación": "Muestra etiquetada", "_row": 10}, {"ID": "FR-03", "Tipo": "Funcional", "Requisito": "Identificar entidades relevantes, como pedido, fecha, monto o producto.", "Prioridad": "Should", "Propietario": "Calidad", "Criterio de aceptación": "Entidades visibles y editables.", "EDT": "4.2", "Verificación": "PAU", "_row": 11}, {"ID": "FR-04", "Tipo": "Funcional", "Requisito": "Recuperar artículos validados de la base de conocimiento.", "Prioridad": "Must", "Propietario": "Knowledge Manager", "Criterio de aceptación": "Solo fuentes vigentes y aprobadas.", "EDT": "5.1", "Verificación": "Prueba de trazabilidad", "_row": 12}, {"ID": "FR-05", "Tipo": "Funcional", "Requisito": "Presentar la siguiente mejor acción de acuerdo con el contexto.", "Prioridad": "Must", "Propietario": "Product Owner", "Criterio de aceptación": "Recomendación correcta ≥85%.", "EDT": "4.2", "Verificación": "Prueba de precisión", "_row": 13}, {"ID": "FR-06", "Tipo": "Funcional", "Requisito": "Generar scripts o prompts editables para el agente.", "Prioridad": "Should", "Propietario": "Formación", "Criterio de aceptación": "Guiones disponibles para los 20 motivos.", "EDT": "4.2", "Verificación": "PAU", "_row": 14}, {"ID": "FR-07", "Tipo": "Funcional", "Requisito": "Detectar señales de sentimiento negativo o riesgo de escalamiento.", "Prioridad": "Should", "Propietario": "Calidad", "Criterio de aceptación": "Alerta visible con regla documentada.", "EDT": "4.2", "Verificación": "Prueba funcional", "_row": 15}, {"ID": "FR-08", "Tipo": "Funcional", "Requisito": "Generar un resumen del caso para apoyar la documentación en el SGC.", "Prioridad": "Must", "Propietario": "Operaciones", "Criterio de aceptación": "Resumen editable y copiable al SGC.", "EDT": "5.1", "Verificación": "PAU", "_row": 16}, {"ID": "FR-09", "Tipo": "Funcional", "Requisito": "Registrar retroalimentación del agente sobre la utilidad de la recomendación.", "Prioridad": "Must", "Propietario": "Product Owner", "Criterio de aceptación": "Feedback almacenado con fecha y usuario.", "EDT": "4.2", "Verificación": "Prueba funcional", "_row": 17}, {"ID": "FR-10", "Tipo": "Funcional", "Requisito": "Mostrar la fuente de conocimiento utilizada por cada recomendación.", "Prioridad": "Must", "Propietario": "Cliente / Calidad", "Criterio de aceptación": "Artículo y versión identificables.", "EDT": "4.2", "Verificación": "Prueba de trazabilidad", "_row": 18}, {"ID": "FR-11", "Tipo": "Funcional", "Requisito": "Aplicar perfiles y permisos diferenciados para agente, supervisor y administrador.", "Prioridad": "Must", "Propietario": "Seguridad", "Criterio de aceptación": "Matriz de accesos aprobada.", "EDT": "5.1", "Verificación": "Prueba de roles", "_row": 19}, {"ID": "FR-12", "Tipo": "Funcional", "Requisito": "Registrar métricas de uso, latencia, aceptación y descarte.", "Prioridad": "Must", "Propietario": "Datos", "Criterio de aceptación": "Eventos disponibles para medición.", "EDT": "4.2", "Verificación": "Prueba técnica", "_row": 20}, {"ID": "NFR-01", "Tipo": "No funcional", "Requisito": "Alcanzar disponibilidad mensual de al menos 99% durante el piloto.", "Prioridad": "Must", "Propietario": "TI", "Criterio de aceptación": "Reporte de disponibilidad ≥99%.", "EDT": "5.2", "Verificación": "Monitoreo", "_row": 21}, {"ID": "NFR-02", "Tipo": "No funcional", "Requisito": "Mantener latencia mediana de recomendaciones igual o menor a 3 segundos.", "Prioridad": "Must", "Propietario": "Operaciones", "Criterio de aceptación": "Prueba de rendimiento aprobada.", "EDT": "5.2", "Verificación": "Prueba de carga", "_row": 22}, {"ID": "NFR-03", "Tipo": "No funcional", "Requisito": "Alcanzar precisión mínima de 85% en el proceso correcto recomendado.", "Prioridad": "Must", "Propietario": "Calidad", "Criterio de aceptación": "Evaluación sobre muestra controlada.", "EDT": "4.2", "Verificación": "Prueba de precisión", "_row": 23}, {"ID": "NFR-04", "Tipo": "No funcional", "Requisito": "Cifrar datos en tránsito y en reposo.", "Prioridad": "Must", "Propietario": "Seguridad", "Criterio de aceptación": "Controles verificados por Seguridad.", "EDT": "5.2", "Verificación": "Inspección técnica", "_row": 24}, {"ID": "NFR-05", "Tipo": "No funcional", "Requisito": "Anonimizar las 3,000 interacciones antes de su uso.", "Prioridad": "Must", "Propietario": "Legal / Seguridad", "Criterio de aceptación": "Cero datos personales no autorizados.", "EDT": "3.2", "Verificación": "Muestreo y auditoría", "_row": 25}, {"ID": "NFR-06", "Tipo": "No funcional", "Requisito": "Mantener trazabilidad de accesos, recomendaciones y cambios de configuración.", "Prioridad": "Must", "Propietario": "Seguridad", "Criterio de aceptación": "Logs consultables y retenidos.", "EDT": "5.1", "Verificación": "Prueba de auditoría", "_row": 26}, {"ID": "NFR-07", "Tipo": "No funcional", "Requisito": "Permitir operación degradada sin interrumpir la atención al cliente.", "Prioridad": "Should", "Propietario": "Operaciones", "Criterio de aceptación": "Agente puede continuar sin Scout.", "EDT": "5.2", "Verificación": "Simulación de falla", "_row": 27}, {"ID": "NFR-08", "Tipo": "No funcional", "Requisito": "Ser compatible con navegadores y resolución utilizados en la operación.", "Prioridad": "Must", "Propietario": "TI", "Criterio de aceptación": "Prueba en ambiente operativo aprobada.", "EDT": "5.2", "Verificación": "Prueba de compatibilidad", "_row": 28}, {"ID": "TR-01", "Tipo": "Transición", "Requisito": "Depurar y aprobar 60 artículos de conocimiento antes de la semana 4.", "Prioridad": "Must", "Propietario": "Knowledge Manager", "Criterio de aceptación": "60 artículos con propietario y versión.", "EDT": "3.3", "Verificación": "Inspección", "_row": 29}, {"ID": "TR-02", "Tipo": "Transición", "Requisito": "Preparar 3,000 interacciones anonimizadas y etiquetadas.", "Prioridad": "Must", "Propietario": "Datos", "Criterio de aceptación": "Dataset aprobado por Seguridad y Calidad.", "EDT": "3.2", "Verificación": "Auditoría", "_row": 30}, {"ID": "TR-03", "Tipo": "Transición", "Requisito": "Capacitar al menos al 95% de agentes y supervisores antes del lanzamiento.", "Prioridad": "Must", "Propietario": "Formación", "Criterio de aceptación": "Registro de asistencia y evaluación.", "EDT": "6.2", "Verificación": "Revisión documental", "_row": 31}, {"ID": "TR-04", "Tipo": "Transición", "Requisito": "Completar modo sombra y readiness antes del go/no-go.", "Prioridad": "Must", "Propietario": "Operaciones", "Criterio de aceptación": "Cero bloqueos críticos abiertos.", "EDT": "6.2", "Verificación": "Checklist", "_row": 32}, {"ID": "PR-01", "Tipo": "Proyecto", "Requisito": "Finalizar el piloto entre el 20 de julio y el 13 de septiembre de 2026.", "Prioridad": "Must", "Propietario": "Patrocinador", "Criterio de aceptación": "Hitos dentro de fechas aprobadas.", "EDT": "1.1", "Verificación": "Control de cronograma", "_row": 33}, {"ID": "PR-02", "Tipo": "Proyecto", "Requisito": "No exceder el presupuesto autorizado de USD 78,500.", "Prioridad": "Must", "Propietario": "Finanzas", "Criterio de aceptación": "Costo final ≤BAC.", "EDT": "1.1", "Verificación": "Control de costos", "_row": 34}, {"ID": "PR-03", "Tipo": "Proyecto", "Requisito": "Aplicar control formal a cambios de alcance, plazo, costo o exclusiones.", "Prioridad": "Must", "Propietario": "PMO", "Criterio de aceptación": "Solicitudes registradas y aprobadas.", "EDT": "1.1", "Verificación": "Auditoría", "_row": 35}, {"ID": "PR-04", "Tipo": "Proyecto", "Requisito": "Emitir un reporte semanal y mantener un registro de decisiones.", "Prioridad": "Should", "Propietario": "Patrocinador", "Criterio de aceptación": "Ocho reportes emitidos.", "EDT": "1.1", "Verificación": "Revisión documental", "_row": 36}];
+const FIELDS=["ID","Tipo","Requisito","Prioridad","Propietario","Criterio de aceptación","EDT","Verificación"];
+const FILTER_KEYS=["Tipo","Prioridad","Propietario","EDT"];
+let state={sortKey:"ID",sortDir:1,page:1};
+const normalize=v=>(v??"").toString().normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+function filterId(key){return "filter_"+normalize(key).replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"")}
+function populateFilters(){FILTER_KEYS.forEach(key=>{const sel=document.getElementById(filterId(key));[...new Set(DATA.map(r=>r[key]).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"es",{numeric:true})).forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;sel.appendChild(o)})})}
+function filtered(){const q=normalize(document.getElementById("search").value);let rows=DATA.filter(r=>{if(q&&!FIELDS.some(k=>normalize(r[k]).includes(q)))return false;for(const k of FILTER_KEYS){const v=document.getElementById(filterId(k)).value;if(v&&r[k]!==v)return false}return true});const key=state.sortKey;rows.sort((a,b)=>{const av=a[key]??"",bv=b[key]??"";return String(av).localeCompare(String(bv),"es",{numeric:true})*state.sortDir});return rows}
+function badgePriority(v){const cls=normalize(v)==="must"?"must":"should";return `<span class="badge ${cls}">${v}</span>`}
+function badgeType(v){return `<span class="badge type">${v}</span>`}
+function render(){const rows=filtered();const size=+document.getElementById("page_size").value;const pages=size?Math.max(1,Math.ceil(rows.length/size)):1;if(state.page>pages)state.page=pages;const shown=size?rows.slice((state.page-1)*size,state.page*size):rows;const tb=document.querySelector("#data_table tbody");tb.innerHTML="";shown.forEach(r=>{const tr=document.createElement("tr");FIELDS.forEach(k=>{const td=document.createElement("td");if(k==="Prioridad")td.innerHTML=badgePriority(r[k]);else if(k==="Tipo")td.innerHTML=badgeType(r[k]);else td.textContent=r[k];tr.appendChild(td)});tb.appendChild(tr)});document.getElementById("status").textContent=`Mostrando ${shown.length} de ${rows.length} requisitos`;renderPagination(pages);document.querySelectorAll("th").forEach(th=>{const s=th.querySelector(".sort");s.textContent=th.dataset.key===state.sortKey?(state.sortDir===1?"↑":"↓"):"↕"})}
+function renderPagination(pages){const box=document.getElementById("pagination");box.innerHTML="";if(pages<=1)return;const add=(txt,page,disabled=false,active=false)=>{const b=document.createElement("button");b.textContent=txt;b.disabled=disabled;b.className=active?"active":"";b.onclick=()=>{state.page=page;render();document.querySelector(".table-wrap").scrollTop=0};box.appendChild(b)};add("Anterior",Math.max(1,state.page-1),state.page===1);const lo=Math.max(1,state.page-2),hi=Math.min(pages,state.page+2);for(let p=lo;p<=hi;p++)add(String(p),p,false,p===state.page);add("Siguiente",Math.min(pages,state.page+1),state.page===pages)}
+document.querySelectorAll("th").forEach(th=>th.onclick=()=>{const key=th.dataset.key;if(state.sortKey===key)state.sortDir*=-1;else{state.sortKey=key;state.sortDir=1}state.page=1;render()});
+document.getElementById("search").oninput=()=>{state.page=1;render()};
+document.getElementById("page_size").onchange=()=>{state.page=1;render()};
+FILTER_KEYS.forEach(k=>document.getElementById(filterId(k)).onchange=()=>{state.page=1;render()});
+document.getElementById("reset").onclick=()=>{document.getElementById("search").value="";FILTER_KEYS.forEach(k=>document.getElementById(filterId(k)).value="");document.getElementById("page_size").value="20";state={sortKey:"ID",sortDir:1,page:1};render()};
+populateFilters();render();
+</script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Índice de Anexos - Proyecto Scout</title>
+  <style>
+    :root {
+      --navy: #1f365c;
+      --navy-2: #2d4c7e;
+      --gold: #f6b82e;
+      --bg: #f5f7fb;
+      --ink: #1c2430;
+      --muted: #607086;
+      --soft: #eef2f7;
+      --line: #dce2ea;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    header {
+      background: linear-gradient(110deg, var(--gold), var(--navy));
+      color: white;
+      padding: 30px 34px;
+    }
+    header h1 { margin: 0 0 7px; font-size: 28px; line-height: 1.2; }
+    header p { margin: 0; max-width: 1050px; opacity: .96; }
+    
+    main { max-width: 1500px; margin: auto; padding: 22px 28px 34px; }
+    
+    .card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 3px 12px rgba(31,54,92,.08);
+    }
+    .intro { line-height: 1.55; margin-top: 0; color: var(--ink); }
+    
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .metric { background: var(--soft); border-radius: 10px; padding: 16px; }
+    .metric b { display: block; font-size: 24px; color: var(--navy); margin-bottom: 4px; }
+    .metric span { font-size: 13px; color: var(--muted); }
+    
+    .section-title {
+      border-bottom: 2px solid var(--soft);
+      padding-bottom: 8px;
+      margin-top: 32px;
+      margin-bottom: 16px;
+      color: var(--navy);
+      font-size: 20px;
+    }
+    
+    .grid-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+    .link-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      text-decoration: none;
+      color: var(--ink);
+      display: block;
+      transition: all 0.2s ease;
+      background: #ffffff;
+    }
+    .link-card:hover {
+      border-color: var(--navy);
+      box-shadow: 0 4px 12px rgba(31,54,92,.1);
+      background: #f8fafc;
+      transform: translateY(-2px);
+    }
+    .link-card h3 { margin: 0 0 8px; color: var(--navy); font-size: 16px; }
+    .link-card p { margin: 0; font-size: 13px; color: var(--muted); line-height: 1.4; }
+    
+    .team-info {
+      font-size: 13px;
+      color: var(--muted);
+      background: #f8fafc;
+      padding: 16px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Capstone Project</h1>
+    <p>Diseño y Planificación para la Implementación de Scout en Everline Solutions | ESI School of Management</p>
+  </header>
+  <main>
+    <section class="card">
+      <h2>Resumen Ejecutivo del Proyecto</h2>
+      <p class="intro">Este panel interactivo consolida los anexos digitales y herramientas de dirección del proyecto. Debido a la densidad y extensión de los artefactos, la documentación complementaria (Diagramas, Estructuras de Desglose y Matrices) se encuentra alojada en esta plataforma para su revisión interactiva.</p>
+      
+      <div class="meta">
+        <div class="metric"><b>8 semanas</b><span>Duración del Piloto (20/07 - 13/09)</span></div>
+        <div class="metric"><b>USD 78,500</b><span>Presupuesto Autorizado (BAC)</span></div>
+        <div class="metric"><b>120 agentes</b><span>Población Operativa Alcance</span></div>
+        <div class="metric"><b>USD 120,000</b><span>Beneficio Neto Anual Proyectado</span></div>
+      </div>
+
+      <div class="team-info">
+        <strong>Estudiantes:</strong> Lesli Amanda Mendez Veliz, Carlos Ernesto Polanco Ramirez, Carlos Alberto Chavez Villeda, Edwin Ignacio Rivera Callejas, Nadia Stephanie Caballero Pacheco.<br>
+        <strong>Asesora:</strong> Mgtr. Nancy Cárdenas, MBA, PMP.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Índice de Documentación Digital</h2>
+      
+      <h3 class="section-title">1. Gestión del Alcance y Requisitos</h3>
+      <div class="grid-links">
+        <!-- Reemplaza el texto en href por el nombre exacto de tu archivo -->
+        <a href="Scout_Tabla3_Registro_Requisitos_Interactivo.html" class="link-card">
+          <h3>Registro Consolidado de Requisitos</h3>
+          <p>Tabla 3: Requisitos de negocio, funcionales, de transición y del proyecto priorizados (MoSCoW).</p>
+        </a>
+        <a href="Scout_Tabla4_Matriz_Trazabilidad_Requisitos_Interactiva.html" class="link-card">
+          <h3>Matriz de Trazabilidad</h3>
+          <p>Tabla 4: Relación entre requisitos, componentes de la EDT, entregables y criterios de aceptación.</p>
+        </a>
+        <a href="Scout_WBS_Interactiva.html" class="link-card">
+          <h3>EDT / WBS Interactiva</h3>
+          <p>Estructura de Desglose del Trabajo navegable por niveles para los componentes del proyecto.</p>
+        </a>
+      </div>
+
+      <h3 class="section-title">2. Gestión del Cronograma</h3>
+      <div class="grid-links">
+        <a href="Scout_Tabla9_Lista maestra de actividades.html" class="link-card">
+          <h3>Lista Maestra de Actividades</h3>
+          <p>Tabla 9: Registro de las 68 actividades con responsables, evidencias y criticidad.</p>
+        </a>
+        <a href="Scout_Tabla10_Secuencia, dependencias y fechas de actividades.html" class="link-card">
+          <h3>Secuencia y Dependencias</h3>
+          <p>Tabla 10: Relaciones lógicas y fechas estimadas del proyecto.</p>
+        </a>
+        <a href="Scout_Gantt_Detallado.html" class="link-card">
+          <h3>Cronograma Gantt Detallado</h3>
+          <p>Visualización temporal interactiva de la ruta crítica y fechas de los hitos principales.</p>
+        </a>
+      </div>
+
+      <h3 class="section-title">3. Gestión de Costos</h3>
+      <div class="grid-links">
+        <a href="Scout_Tabla15_Estimacion_Costos_Actividad_Interactiva.html" class="link-card">
+          <h3>Estimación Detallada de Costos</h3>
+          <p>Tabla 15: Estimación bottom-up desagregada por paquetes de trabajo y categorías presupuestarias.</p>
+        </a>
+        <a href="Scout_Linea_Base_Costos.html" class="link-card">
+          <h3>Línea Base de Costos</h3>
+          <p>Curva de requerimiento acumulado de fondos distribuidos a lo largo de las ocho semanas.</p>
+        </a>
+      </div>
+    </section>
+  
+  </main>
+</body>
+</html>
