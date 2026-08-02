@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Capstone Project - Scout</title>
+  <title>Capstone Project</title>
   <style>
     :root {
       --navy: #1f365c;
@@ -13,7 +13,7 @@
       --ink: #1c2430;
       --muted: #607086;
       --soft: #eef2f7;
-      --line: #dce2ea;
+      --line: #dce2ea; 
     }
     * { box-sizing: border-box; }
     body {
@@ -93,6 +93,18 @@
       border-radius: 8px;
       margin-top: 20px;
     }
+
+      /* --- NUEVO: Contenedor Grid para las Tarjetas Principales --- */
+  .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 24px;
+      align-items: start; /* Hace que cada tarjeta mida solo lo que necesita su contenido */
+    }
+  .dashboard-grid .card {
+     margin-bottom: 0; /* Eliminamos el margen inferior porque el 'gap' ya separa las tarjetas */
+    }
+      /* ------------------------------------------------------------ */
   </style>
 </head>
 <body>
@@ -101,6 +113,7 @@
     <p>Diseño y Planificación para la Implementación de Scout en Everline Solutions | ESI School of Management</p>
   </header>
   <main>
+    <!-- TARJETA 0: Resumen Ejecutivo (se mantiene) -->
     <section class="card">
       <h2>Resumen Ejecutivo del Proyecto</h2>
       <p class="intro">Este panel interactivo consolida los anexos digitales y herramientas de dirección del proyecto. Debido a la densidad y extensión de los artefactos, la documentación complementaria (Diagramas, Estructuras de Desglose y Matrices) se encuentra alojada en esta plataforma para su revisión interactiva.</p>
@@ -118,55 +131,133 @@
       </div>
     </section>
 
-    <section class="card">
-      <h2>Índice de Documentación Digital</h2>
-      
-      <h3 class="section-title">1. Gestión del Alcance y Requisitos</h3>
-      <div class="grid-links">
-        <!-- Reemplaza el texto en href por el nombre exacto de tu archivo -->
-        <a href="Scout_Tabla3_Registro_Requisitos_Interactivo.html" class="link-card">
-          <h3>Registro Consolidado de Requisitos</h3>
-          <p>Tabla 3: Requisitos de negocio, funcionales, de transición y del proyecto priorizados (MoSCoW).</p>
-        </a>
-        <a href="Scout_Tabla4_Matriz_Trazabilidad_Requisitos_Interactiva.html" class="link-card">
-          <h3>Matriz de Trazabilidad</h3>
-          <p>Tabla 4: Relación entre requisitos, componentes de la EDT, entregables y criterios de aceptación.</p>
-        </a>
-        <a href="Scout_WBS_Interactiva.html" class="link-card">
-          <h3>EDT / WBS Interactiva</h3>
-          <p>Estructura de Desglose del Trabajo navegable por niveles para los componentes del proyecto.</p>
-        </a>
-      </div>
+<!-- TÍTULO GENERAL DEL ÍNDICE -->
+    <h2 style="color: var(--navy); font-size: 24px; margin: 36px 0 20px 4px; padding-left: 12px; border-left: 4px solid var(--gold);">
+      Índice de Documentación Digital
+    </h2>
 
-      <h3 class="section-title">2. Gestión del Cronograma</h3>
-      <div class="grid-links">
-        <a href="Scout_Tabla9_Lista maestra de actividades.html" class="link-card">
-          <h3>Lista Maestra de Actividades</h3>
-          <p>Tabla 9: Registro de las 68 actividades con responsables, evidencias y criticidad.</p>
-        </a>
-        <a href="Scout_Tabla10_Secuencia, dependencias y fechas de actividades.html" class="link-card">
-          <h3>Secuencia y Dependencias</h3>
-          <p>Tabla 10: Relaciones lógicas y fechas estimadas del proyecto.</p>
-        </a>
-        <a href="Scout_Gantt_Detallado.html" class="link-card">
-          <h3>Cronograma Gantt Detallado</h3>
-          <p>Visualización temporal interactiva de la ruta crítica y fechas de los hitos principales.</p>
-        </a>
-      </div>
 
-      <h3 class="section-title">3. Gestión de Costos</h3>
-      <div class="grid-links">
-        <a href="Scout_Tabla15_Estimacion_Costos_Actividad_Interactiva.html" class="link-card">
-          <h3>Estimación Detallada de Costos</h3>
-          <p>Tabla 15: Estimación bottom-up desagregada por paquetes de trabajo y categorías presupuestarias.</p>
-        </a>
-        <a href="Scout_Linea_Base_Costos.html" class="link-card">
-          <h3>Línea Base de Costos</h3>
-          <p>Curva de requerimiento acumulado de fondos distribuidos a lo largo de las ocho semanas.</p>
-        </a>
-      </div>
-    </section>
-  
+    <!-- TARJETA 1: Alcance -->
+    <div class="dashboard-grid">
+
+      <!-- TARJETA 1: Alcance -->
+      <section class="card">
+        <h2 class="section-title" style="margin-top: 0;">1. Gestión del Alcance</h2>
+        <div class="grid-links">
+          <a href="Scout_Tabla3_Registro_Requisitos_Interactivo.html" class="link-card">
+            <h3>Registro Consolidado de Requisitos</h3>
+            <p>Tabla 3: Requisitos de negocio, funcionales, de transición y del proyecto priorizados.</p>
+          </a>
+          <a href="Scout_Tabla4_Matriz_Trazabilidad_Requisitos_Interactiva.html" class="link-card">
+            <h3>Matriz de Trazabilidad</h3>
+            <p>Tabla 4: Relación entre requisitos, componentes de la EDT, entregables y criterios.</p>
+          </a>
+          <a href="Scout_WBS_Interactiva.html" class="link-card">
+            <h3>EDT / WBS Interactiva</h3>
+            <p>Estructura de Desglose del Trabajo navegable por niveles para los componentes del proyecto.</p>
+          </a>
+          <a href="Scout_Diccionario_EDT_Completo.html" class="link-card">
+            <h3>Diccionario de la EDT</h3>
+            <p>Definición de los 18 paquetes de trabajo, criterios de aceptación, dependencias y costos.</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- TARJETA 2: Cronograma -->
+      <section class="card">
+        <h2 class="section-title" style="margin-top: 0;">2. Gestión del Cronograma</h2>
+        <div class="grid-links">
+          <a href="Scout_Tabla9_Lista maestra de actividades.html" class="link-card">
+            <h3>Lista Maestra de Actividades</h3>
+            <p>Tabla 9: Registro de las 68 actividades con responsables, evidencias y criticidad.</p>
+          </a>
+          <a href="Scout_Ajuste_Secuencia_Precedentes_Sucesoras.html" class="link-card">
+            <h3>Ajuste de Secuencia y Dependencias</h3>
+            <p>Matriz con predecesoras y sucesoras explícitas, ajustada para la fase de monitoreo.</p>
+          </a>
+          <a href="Scout_Gantt_Detallado.html" class="link-card">
+            <h3>Cronograma Gantt Detallado</h3>
+            <p>Visualización temporal interactiva de la ruta crítica y fechas de los hitos principales.</p>
+          </a>
+          <a href="Scout_Ajuste_PERT_Detallado.html" class="link-card">
+            <h3>Estimaciones PERT Detalladas</h3>
+            <p>Cálculo de duración esperada (TE), varianza y desviación estándar para actividades con incertidumbre.</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- TARJETA 3: Costos -->
+      <section class="card">
+        <h2 class="section-title" style="margin-top: 0;">3. Gestión de Costos</h2>
+        <div class="grid-links">
+          <a href="Scout_Tabla15_Estimacion_Costos_Actividad_Interactiva.html" class="link-card">
+            <h3>Estimación Detallada de Costos</h3>
+            <p>Estimación bottom-up desagregada por paquetes de trabajo y categorías presupuestarias.</p>
+          </a>
+          <a href="Scout_Linea_Base_Costos.html" class="link-card">
+            <h3>Línea Base de Costos</h3>
+            <p>Curva de requerimiento acumulado de fondos distribuidos a lo largo de las ocho semanas.</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- TARJETA 4: Recursos -->
+      <section class="card">
+        <h2 class="section-title" style="margin-top: 0;">4. Gestión de Recursos</h2>
+        <div class="grid-links">
+          <a href="Scout_Recursos_por_Actividad.html" class="link-card">
+            <h3>Estimación de Recursos por Actividad</h3>
+            <p>Matriz detallada de actividades con fechas, esfuerzo en horas, responsables y tecnología.</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- TARJETA 5: Comunicaciones -->
+      <section class="card">
+        <h2 class="section-title" style="margin-top: 0;">5. Gestión de Comunicaciones</h2>
+        <div class="grid-links">
+          <a href="Scout_Matriz_Comunicaciones.html" class="link-card">
+            <h3>Matriz de Comunicaciones</h3>
+            <p>Plan de distribución de información con audiencias, canales, frecuencias y evidencia.</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- TARJETA 6: Riesgos -->
+      <section class="card">
+        <h2 class="section-title" style="margin-top: 0;">6. Gestión de Riesgos</h2>
+        <div class="grid-links">
+          <a href="Scout_Registro_Riesgos_Completo.html" class="link-card">
+            <h3>Registro Completo de Riesgos</h3>
+            <p>Análisis de 24 riesgos con probabilidad, impacto, disparadores y planes de respuesta.</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- TARJETA 7: Adquisiciones -->
+      <section class="card">
+        <h2 class="section-title" style="margin-top: 0;">7. Gestión de Adquisiciones</h2>
+        <div class="grid-links">
+          <a href="Scout_Plan_Adquisiciones.html" class="link-card">
+            <h3>Plan Detallado de Adquisiciones</h3>
+            <p>Contratos, licencias y servicios requeridos con montos, fechas y criterios de aceptación.</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- TARJETA 8: Interesados -->
+      <section class="card">
+        <h2 class="section-title" style="margin-top: 0;">8. Gestión de Interesados</h2>
+        <div class="grid-links">
+          <a href="Scout_Matriz_Interesados.html" class="link-card">
+            <h3>Matriz de Interesados</h3>
+            <p>Análisis de poder, interés y estrategias de involucramiento para 15 interesados clave.</p>
+          </a>
+        </div>
+      </section>
+
+    </div>
+
   </main>
 </body>
 </html>

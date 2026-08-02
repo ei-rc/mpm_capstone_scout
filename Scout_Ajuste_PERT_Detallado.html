@@ -1,0 +1,185 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Estimaciones PERT detalladas</title><style>
+:root{--navy:#1f365c;--navy2:#2d4c7e;--gold:#f6b82e;--bg:#f4f6fa;--ink:#1c2430;--muted:#64748b;--line:#d7dde6;--soft:#eef2f7}
+*{box-sizing:border-box}body{margin:0;font-family:"Segoe UI",Arial,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(110deg,var(--gold),var(--navy));color:#fff;padding:30px 34px}header h1{margin:0 0 7px;font-size:28px}header p{margin:0;opacity:.96}
+main{max-width:1800px;margin:auto;padding:22px 28px 34px}.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:18px;box-shadow:0 3px 12px rgba(31,54,92,.08)}
+.toolbar{display:flex;align-items:end;gap:10px;flex-wrap:wrap}.toolbar label{font-size:12px;color:#475569;display:flex;flex-direction:column;gap:5px}.toolbar input,.toolbar select,.toolbar button{height:40px;padding:8px 11px;border:1px solid #c7cfda;border-radius:7px;background:#fff;font-size:14px}.toolbar input{min-width:320px}.toolbar button{cursor:pointer;background:#687587;color:#fff;border:0;font-weight:600}.status{margin-left:auto;color:var(--muted);font-size:13px;padding:10px 0}
+.table-wrap{overflow:auto;max-height:70vh;border:1px solid var(--line);border-radius:8px}table{width:100%;min-width:1450px;border-collapse:separate;border-spacing:0;font-size:13px}th{position:sticky;top:0;z-index:3;background:var(--navy);color:#fff;text-align:left;cursor:pointer;user-select:none}th:hover{background:var(--navy2)}th,td{padding:9px 10px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);vertical-align:top}tbody tr:nth-child(even){background:#f8fafc}tbody tr:hover{background:#edf4ff}.num{text-align:right;white-space:nowrap}.badge{display:inline-block;border-radius:999px;padding:3px 8px;font-size:11px;font-weight:700;background:#dbeafe;color:#1d4ed8;white-space:nowrap}.note{font-size:13px;color:var(--muted);font-style:italic;margin:14px 0 0}.pagination{display:flex;gap:8px;justify-content:center;align-items:center;margin-top:14px;flex-wrap:wrap}.pagination button{border:1px solid #c7cfda;background:#fff;border-radius:6px;padding:7px 10px;cursor:pointer}.pagination button.active{background:var(--navy);color:#fff}.pagination button:disabled{opacity:.45}
+@media(max-width:900px){main{padding:14px}.toolbar input{min-width:220px}.status{width:100%;margin-left:0}}
+
+/* --- ESTILOS DE NAVEGACIÓN GLOBAL --- */
+.global-nav {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* Botón Home */
+.btn-home {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--navy, #1f365c); /* Usa el azul marino de tu paleta */
+  color: white;
+  padding: 9px 16px;
+  border-radius: 7px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: background-color 0.2s ease;
+}
+.btn-home:hover {
+  background-color: #2d4c7e; /* Un tono más claro al pasar el mouse */
+  color: white;
+}
+
+/* Dropdown Container */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Button */
+.btn-dropdown {
+  background-color: white;
+  color: #475569;
+  padding: 9px 16px;
+  border: 1px solid #c8d0dc;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  font-family: inherit;
+}
+.btn-dropdown:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+}
+
+/* Dropdown Menu Contenido (Oculto por defecto) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 260px;
+  max-height: 70vh; /* Controla que el menú no sea más alto que el 70% de la pantalla */
+  overflow-y: auto; /* Agrega barra de desplazamiento si el contenido excede el alto máximo */
+  box-shadow: 0px 8px 16px 0px rgba(31,54,92,0.15);
+  border: 1px solid #dce2ea;
+  border-radius: 8px;
+  z-index: 100;
+  top: 110%; /* Aparece justo debajo del botón */
+  left: 0;
+  padding: 8px 0;
+}
+
+/* Mostrar el menú al hacer hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Títulos de agrupación en el menú */
+.dropdown-group {
+  padding: 8px 16px 4px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Enlaces del menú */
+.dropdown-content a {
+  color: var(--ink, #1c2430);
+  padding: 8px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.dropdown-content a:hover {
+  background-color: #edf4ff; /* Fondo azul muy suave al pasar el mouse */
+  color: var(--navy, #1f365c);
+}
+
+/* Ocultar en impresión */
+@media print {
+  .global-nav { display: none !important; }
+}
+/* ------------------------------------ */
+
+
+</style></head><body><header><h1>Estimaciones PERT detalladas</h1><p>Proyecto de implementación de Scout en Everline Solutions</p></header><main>
+
+<!-- INCIO DE NAVEGACIÓN GLOBAL -->
+<div class="global-nav">
+  <!-- Botón Home -->
+  <a href="index.html" class="btn-home">
+    <!-- Icono de casita SVG -->
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px; vertical-align: text-bottom;">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+    Volver al Índice
+  </a>
+
+  <!-- Dropdown Menu -->
+  <div class="dropdown">
+    <button class="btn-dropdown">
+      Ir a otro anexo
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 6px; vertical-align: middle;">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+    <div class="dropdown-content">
+      <div class="dropdown-group">Alcance y Requisitos</div>
+      <a href="Scout_Tabla3_Registro_Requisitos_Interactivo.html">Registro Consolidado de Requisitos</a>
+      <a href="Scout_Tabla4_Matriz_Trazabilidad_Requisitos_Interactiva.html">Matriz de Trazabilidad</a>
+      <a href="Scout_WBS_Interactiva.html">EDT / WBS Interactiva</a>
+      <a href="Scout_Diccionario_EDT_Completo.html">Diccionario de la EDT</a>
+      
+      <div class="dropdown-group">Cronograma</div>
+      <a href="Scout_Tabla9_Lista maestra de actividades.html">Lista Maestra de Actividades</a>
+      <a href="Scout_Ajuste_Secuencia_Precedentes_Sucesoras.html">Ajuste de Secuencia y Dependencias</a>
+      <a href="Scout_Gantt_Detallado.html">Cronograma Gantt Detallado</a>
+      <a href="Scout_Ajuste_PERT_Detallado.html">Estimaciones PERT Detalladas</a>
+      
+      <div class="dropdown-group">Costos</div>
+      <a href="Scout_Tabla15_Estimacion_Costos_Actividad_Interactiva.html">Estimación Detallada de Costos</a>
+      <a href="Scout_Linea_Base_Costos.html">Línea Base de Costos</a>
+
+      <div class="dropdown-group">Recursos</div>
+      <a href="Scout_Recursos_por_Actividad.html">Estimación de Recursos por Actividad</a>
+
+      <div class="dropdown-group">Comunicaciones</div>
+      <a href="Scout_Matriz_Comunicaciones.html">Matriz de Comunicaciones</a>
+
+      <div class="dropdown-group">Riesgos</div>
+      <a href="Scout_Registro_Riesgos_Completo.html">Registro Completo de Riesgos</a>
+
+      <div class="dropdown-group">Adquisiciones</div>
+      <a href="Scout_Plan_Adquisiciones.html">Plan Detallado de Adquisiciones</a>
+
+      <div class="dropdown-group">Interesados</div>
+      <a href="Scout_Matriz_Interesados.html">Matriz de Interesados</a>
+    </div>
+  </div>
+</div>
+<!-- FIN DE NAVEGACIÓN GLOBAL -->
+
+
+<section class="card"><p>Cálculo de duración esperada, varianza y desviación estándar para las actividades de mayor incertidumbre. Fórmula: TE=(O+4M+P)/6; Var=((P-O)/6)^2.</p></section><section class="card"><div class="toolbar"><label>Buscar<input id="search" type="search" placeholder="Buscar en la tabla"></label><label>ID<select id="filter_id"><option value="">Todos</option></select></label><label>Filas<select id="page_size"><option>10</option><option selected>20</option><option>30</option><option value="0">Todas</option></select></label><button id="reset">Restablecer</button><div id="status" class="status"></div></div></section><section class="card"><div class="table-wrap"><table><thead><tr><th data-key="ID">ID <span>↕</span></th><th data-key="Actividad">Actividad <span>↕</span></th><th data-key="O">O <span>↕</span></th><th data-key="M">M <span>↕</span></th><th data-key="P">P <span>↕</span></th><th data-key="PERT">PERT <span>↕</span></th><th data-key="Varianza">Varianza <span>↕</span></th><th data-key="Desv. estándar">Desv. estándar <span>↕</span></th><th data-key="Duración base">Duración base <span>↕</span></th><th data-key="Diferencia">Diferencia <span>↕</span></th></tr></thead><tbody></tbody></table></div><div id="pagination" class="pagination"></div><p class="note">Fuente: Elaboración propia. Información ficticia preparada exclusivamente para fines académicos.</p></section></main><script>
+const DATA=[{"ID": "A19", "Actividad": "Anonimizar y aplicar controles de privacidad", "O": 3, "M": 4, "P": 6, "PERT": 4.17, "Varianza": 0.25, "Desv. estándar": 0.5, "Duración base": 4.0, "Diferencia": 0.17}, {"ID": "A21", "Actividad": "Depurar, actualizar y normalizar artículos", "O": 4, "M": 6, "P": 8, "PERT": 6.0, "Varianza": 0.444, "Desv. estándar": 0.667, "Duración base": 6.0, "Diferencia": 0.0}, {"ID": "A29", "Actividad": "Configurar reglas de siguiente mejor acción", "O": 3, "M": 4, "P": 6, "PERT": 4.17, "Varianza": 0.25, "Desv. estándar": 0.5, "Duración base": 4.0, "Diferencia": 0.17}, {"ID": "A34", "Actividad": "Desarrollar integración con telefonía y transcripción", "O": 4, "M": 5, "P": 8, "PERT": 5.33, "Varianza": 0.444, "Desv. estándar": 0.667, "Duración base": 5.0, "Diferencia": 0.33}, {"ID": "A35", "Actividad": "Desarrollar integración con SGC y resumen de caso", "O": 4, "M": 5, "P": 8, "PERT": 5.33, "Varianza": 0.444, "Desv. estándar": 0.667, "Duración base": 5.0, "Diferencia": 0.33}, {"ID": "A40", "Actividad": "Completar evaluación de privacidad y seguridad", "O": 4, "M": 5, "P": 7, "PERT": 5.17, "Varianza": 0.25, "Desv. estándar": 0.5, "Duración base": 5.0, "Diferencia": 0.17}, {"ID": "A50", "Actividad": "Capacitar agentes y completar evaluación de aprendizaje", "O": 3, "M": 4, "P": 5, "PERT": 4.0, "Varianza": 0.111, "Desv. estándar": 0.333, "Duración base": 4.0, "Diferencia": 0.0}, {"ID": "A54", "Actividad": "Estabilizar operación y cerrar incidencias prioritarias", "O": 4, "M": 5, "P": 7, "PERT": 5.17, "Varianza": 0.25, "Desv. estándar": 0.5, "Duración base": 5.0, "Diferencia": 0.17}, {"ID": "A57", "Actividad": "Comparar piloto contra línea base y grupo de referencia", "O": 1, "M": 2, "P": 3, "PERT": 2.0, "Varianza": 0.111, "Desv. estándar": 0.333, "Duración base": 2.0, "Diferencia": 0.0}], FIELDS=["ID", "Actividad", "O", "M", "P", "PERT", "Varianza", "Desv. estándar", "Duración base", "Diferencia"], FILTERS=["ID"], NUMERIC=["O", "M", "P", "PERT", "Varianza", "Desv. estándar", "Duración base", "Diferencia"];
+let state={sortKey:FIELDS[0],sortDir:1,page:1};
+const norm=v=>(v??'').toString().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+const fid=f=>'filter_'+norm(f).replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
+FILTERS.forEach(f=>{const s=document.getElementById(fid(f));[...new Set(DATA.map(r=>r[f]).filter(v=>v!==''&&v!=null))].sort((a,b)=>String(a).localeCompare(String(b),'es',{numeric:true})).forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;s.appendChild(o)})});
+function rows(){const q=norm(document.getElementById('search').value);let rs=DATA.filter(r=>{if(q&&!FIELDS.some(f=>norm(r[f]).includes(q)))return false;for(const f of FILTERS){const v=document.getElementById(fid(f)).value;if(v&&String(r[f])!==v)return false}return true});const k=state.sortKey;rs.sort((a,b)=>{if(NUMERIC.includes(k))return (Number(a[k]||0)-Number(b[k]||0))*state.sortDir;return String(a[k]??'').localeCompare(String(b[k]??''),'es',{numeric:true})*state.sortDir});return rs}
+function render(){const rs=rows(),size=+document.getElementById('page_size').value,pages=size?Math.max(1,Math.ceil(rs.length/size)):1;if(state.page>pages)state.page=pages;const shown=size?rs.slice((state.page-1)*size,state.page*size):rs,tb=document.querySelector('tbody');tb.innerHTML='';shown.forEach(r=>{const tr=document.createElement('tr');FIELDS.forEach(f=>{const td=document.createElement('td');if(NUMERIC.includes(f))td.className='num';td.textContent=r[f]??'';tr.appendChild(td)});tb.appendChild(tr)});document.getElementById('status').textContent=`Mostrando ${shown.length} de ${rs.length} registros`;pager(pages);document.querySelectorAll('th').forEach(th=>th.querySelector('span').textContent=th.dataset.key===state.sortKey?(state.sortDir===1?'↑':'↓'):'↕')}
+function pager(pages){const b=document.getElementById('pagination');b.innerHTML='';if(pages<=1)return;const add=(t,p,dis=false,act=false)=>{const x=document.createElement('button');x.textContent=t;x.disabled=dis;if(act)x.className='active';x.onclick=()=>{state.page=p;render()};b.appendChild(x)};add('Anterior',Math.max(1,state.page-1),state.page===1);for(let p=Math.max(1,state.page-2);p<=Math.min(pages,state.page+2);p++)add(String(p),p,false,p===state.page);add('Siguiente',Math.min(pages,state.page+1),state.page===pages)}
+document.querySelectorAll('th').forEach(th=>th.onclick=()=>{const k=th.dataset.key;if(state.sortKey===k)state.sortDir*=-1;else{state.sortKey=k;state.sortDir=1}state.page=1;render()});document.getElementById('search').oninput=()=>{state.page=1;render()};document.getElementById('page_size').onchange=()=>{state.page=1;render()};FILTERS.forEach(f=>document.getElementById(fid(f)).onchange=()=>{state.page=1;render()});document.getElementById('reset').onclick=()=>{document.getElementById('search').value='';FILTERS.forEach(f=>document.getElementById(fid(f)).value='');state={sortKey:FIELDS[0],sortDir:1,page:1};render()};render();
+</script></body></html>

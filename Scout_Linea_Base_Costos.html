@@ -67,6 +67,8 @@ table{width:100%;border-collapse:collapse;font-size:13px}th{background:var(--nav
   position: absolute;
   background-color: white;
   min-width: 260px;
+  max-height: 70vh; /* Controla que el menú no sea más alto que el 70% de la pantalla */
+  overflow-y: auto; /* Agrega barra de desplazamiento si el contenido excede el alto máximo */
   box-shadow: 0px 8px 16px 0px rgba(31,54,92,0.15);
   border: 1px solid #dce2ea;
   border-radius: 8px;
@@ -113,6 +115,7 @@ table{width:100%;border-collapse:collapse;font-size:13px}th{background:var(--nav
 /* ------------------------------------ */
 
 
+
 </style></head><body><header><h1>Línea base de costos — Scout</h1><p>Estimación bottom-up vinculada con la EDT y el cronograma de ocho semanas.</p></header><main>
 
 <!-- INCIO DE NAVEGACIÓN GLOBAL -->
@@ -140,19 +143,38 @@ table{width:100%;border-collapse:collapse;font-size:13px}th{background:var(--nav
       <a href="Scout_Tabla3_Registro_Requisitos_Interactivo.html">Registro Consolidado de Requisitos</a>
       <a href="Scout_Tabla4_Matriz_Trazabilidad_Requisitos_Interactiva.html">Matriz de Trazabilidad</a>
       <a href="Scout_WBS_Interactiva.html">EDT / WBS Interactiva</a>
+      <a href="Scout_Diccionario_EDT_Completo.html">Diccionario de la EDT</a>
       
       <div class="dropdown-group">Cronograma</div>
       <a href="Scout_Tabla9_Lista maestra de actividades.html">Lista Maestra de Actividades</a>
-      <a href="Scout_Tabla10_Secuencia, dependencias y fechas de actividades.html">Secuencia y Dependencias</a>
+      <a href="Scout_Ajuste_Secuencia_Precedentes_Sucesoras.html">Ajuste de Secuencia y Dependencias</a>
       <a href="Scout_Gantt_Detallado.html">Cronograma Gantt Detallado</a>
+      <a href="Scout_Ajuste_PERT_Detallado.html">Estimaciones PERT Detalladas</a>
       
       <div class="dropdown-group">Costos</div>
       <a href="Scout_Tabla15_Estimacion_Costos_Actividad_Interactiva.html">Estimación Detallada de Costos</a>
-      <!-- <a href="Scout_Linea_Base_Costos.html">Línea Base de Costos</a>-->
+      <a href="Scout_Linea_Base_Costos.html">Línea Base de Costos</a>
+
+      <div class="dropdown-group">Recursos</div>
+      <a href="Scout_Recursos_por_Actividad.html">Estimación de Recursos por Actividad</a>
+
+      <div class="dropdown-group">Comunicaciones</div>
+      <a href="Scout_Matriz_Comunicaciones.html">Matriz de Comunicaciones</a>
+
+      <div class="dropdown-group">Riesgos</div>
+      <a href="Scout_Registro_Riesgos_Completo.html">Registro Completo de Riesgos</a>
+
+      <div class="dropdown-group">Adquisiciones</div>
+      <a href="Scout_Plan_Adquisiciones.html">Plan Detallado de Adquisiciones</a>
+
+      <div class="dropdown-group">Interesados</div>
+      <a href="Scout_Matriz_Interesados.html">Matriz de Interesados</a>
     </div>
   </div>
 </div>
 <!-- FIN DE NAVEGACIÓN GLOBAL -->
+
+
 
 <div class="card"><div class="kpis"><div class="kpi">Estimación directa<b>USD 74,500</b></div><div class="kpi">Contingencia<b>USD 4,000</b></div><div class="kpi">BAC / presupuesto<b>USD 78,500</b></div><div class="kpi">Beneficio neto anual<b>USD 126,000</b></div></div><p class="note">Fuente: Elaboración propia.</p></div>
 <div class="card"><div class="toolbar"><button onclick="window.print()">Imprimir / Guardar PDF</button><select id="cat"><option value="all">Todas las categorías</option></select></div><h2>Requerimiento de fondos por semana</h2><div id="bars" class="bars"></div><p class="note">Fuente: Elaboración propia.</p></div>
