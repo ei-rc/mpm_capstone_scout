@@ -5,7 +5,7 @@
 
 Este repositorio contiene los anexos digitales e interactivos del diseño y planificación del proyecto para la implementación del asistente de inteligencia artificial "Scout" en operaciones de servicio al cliente.
 
-🌐 **[Ver los Anexos Interactivos (Sitio Web)](https://tu-usuario.github.io/tu-repositorio/)**  
+🌐 **[Ver los Anexos Interactivos (Sitio Web)](https://ei-rc.github.io/mpm_capstone_scout/)**  
 *(Haz clic en el enlace de arriba para navegar por el panel de control y las matrices del proyecto)*
 
 ## 📌 Contenido del Repositorio
