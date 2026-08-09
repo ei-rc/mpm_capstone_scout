@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bitácora de ejecución de actividades</title>
+<style>
+:root {
+  --navy:#1f365c;
+  --navy2:#2d4c7e;
+  --gold:#f6b82e;
+  --bg:#f4f6fa;
+  --ink:#1c2430;
+  --muted:#64748b;
+  --line:#d7dde6;
+  --soft:#eef2f7;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  font-family:"Segoe UI",Arial,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+}
+header {
+  background:linear-gradient(110deg,var(--gold),var(--navy));
+  color:white;
+  padding:28px 34px;
+}
+header h1 { margin:0 0 7px; font-size:28px; }
+header p { margin:0; opacity:.96; }
+main { max-width:1800px; margin:auto; padding:22px 28px 34px; }
+.card {
+  background:white;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:18px;
+  margin-bottom:18px;
+  box-shadow:0 3px 12px rgba(31,54,92,.08);
+}
+.toolbar {
+  display:flex;
+  align-items:end;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.toolbar label {
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  font-size:12px;
+  color:#475569;
+}
+.toolbar input,.toolbar select,.toolbar button {
+  height:40px;
+  padding:8px 11px;
+  border:1px solid #c7cfda;
+  border-radius:7px;
+  background:white;
+  font-size:14px;
+}
+.toolbar input { min-width:320px; }
+.toolbar button {
+  border:0;
+  background:#687587;
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+}
+.toolbar button:hover { background:#536071; }
+.status {
+  margin-left:auto;
+  padding:10px 0;
+  color:var(--muted);
+  font-size:13px;
+}
+.table-wrap {
+  overflow:auto;
+  max-height:72vh;
+  border:1px solid var(--line);
+  border-radius:8px;
+}
+table {
+  width:100%;
+  min-width:1400px;
+  border-collapse:separate;
+  border-spacing:0;
+  font-size:13px;
+}
+th {
+  position:sticky;
+  top:0;
+  z-index:3;
+  background:var(--navy);
+  color:white;
+  text-align:left;
+  cursor:pointer;
+  user-select:none;
+}
+th:hover { background:var(--navy2); }
+th,td {
+  padding:9px 10px;
+  border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  vertical-align:top;
+}
+th:last-child,td:last-child { border-right:0; }
+tbody tr:nth-child(even) { background:#f8fafc; }
+tbody tr:hover { background:#edf4ff; }
+.number { text-align:right; white-space:nowrap; }
+.sort { opacity:.65; margin-left:5px; }
+.note {
+  margin:14px 0 0;
+  color:var(--muted);
+  font-size:13px;
+  font-style:italic;
+}
+.no-results {
+  display:none;
+  padding:20px;
+  text-align:center;
+  color:var(--muted);
+}
+@media(max-width:900px) {
+  main { padding:14px; }
+  header { padding:24px 18px; }
+  .toolbar input { min-width:220px; }
+  .status { width:100%; margin-left:0; }
+}
+@media print {
+  body { background:white; }
+  header,.toolbar { display:none!important; }
+  main { padding:0; max-width:none; }
+  .card { box-shadow:none; border:0; padding:0; }
+  .table-wrap { max-height:none; overflow:visible; border:0; }
+  table { min-width:0; font-size:8px; }
+  th { position:static; }
+}
+
+/* --- ESTILOS DE NAVEGACIÓN GLOBAL --- */
+.global-nav {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* Botón Home */
+.btn-home {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--navy, #1f365c); /* Usa el azul marino de tu paleta */
+  color: white;
+  padding: 9px 16px;
+  border-radius: 7px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: background-color 0.2s ease;
+}
+.btn-home:hover {
+  background-color: #2d4c7e; /* Un tono más claro al pasar el mouse */
+  color: white;
+}
+
+/* Dropdown Container */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Button */
+.btn-dropdown {
+  background-color: white;
+  color: #475569;
+  padding: 9px 16px;
+  border: 1px solid #c8d0dc;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  font-family: inherit;
+}
+.btn-dropdown:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+}
+
+/* Dropdown Menu Contenido (Oculto por defecto) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 260px;
+  max-height: 70vh; /* Controla que el menú no sea más alto que el 70% de la pantalla */
+  overflow-y: auto; /* Agrega barra de desplazamiento si el contenido excede el alto máximo */
+  box-shadow: 0px 8px 16px 0px rgba(31,54,92,0.15);
+  border: 1px solid #dce2ea;
+  border-radius: 8px;
+  z-index: 100;
+  top: 110%; /* Aparece justo debajo del botón */
+  left: 0;
+  padding: 8px 0;
+}
+
+/* Mostrar el menú al hacer hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Títulos de agrupación en el menú */
+.dropdown-group {
+  padding: 8px 16px 4px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Enlaces del menú */
+.dropdown-content a {
+  color: var(--ink, #1c2430);
+  padding: 8px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.dropdown-content a:hover {
+  background-color: #edf4ff; /* Fondo azul muy suave al pasar el mouse */
+  color: var(--navy, #1f365c);
+}
+
+/* Ocultar en impresión */
+@media print {
+  .global-nav { display: none !important; }
+}
+/* ------------------------------------ */
+
+</style>
+</head>
+<body>
+<header>
+  <h1>Bitácora de ejecución de actividades</h1>
+  <p>Capítulo 3 — Ejecución | Proyecto Scout en Everline Solutions</p>
+</header>
+<main>
+  <!-- INCIO DE NAVEGACIÓN GLOBAL -->
+<div class="global-nav">
+  <!-- Botón Home -->
+  <a href="index.html" class="btn-home">
+    <!-- Icono de casita SVG -->
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px; vertical-align: text-bottom;">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+    Volver al Índice
+  </a>
+
+  <!-- Dropdown Menu -->
+  <div class="dropdown">
+    <button class="btn-dropdown">
+      Ir a otro anexo
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 6px; vertical-align: middle;">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+    <div class="dropdown-content">
+      <div class="dropdown-group">Alcance y Requisitos</div>
+      <a href="Scout_Tabla3_Registro_Requisitos_Interactivo.html">Registro Consolidado de Requisitos</a>
+      <a href="Scout_Tabla4_Matriz_Trazabilidad_Requisitos_Interactiva.html">Matriz de Trazabilidad</a>
+      <a href="Scout_WBS_Interactiva.html">EDT / WBS Interactiva</a>
+      <a href="Scout_Diccionario_EDT_Completo.html">Diccionario de la EDT</a>
+      
+      <div class="dropdown-group">Cronograma</div>
+      <a href="Scout_Tabla9_Lista maestra de actividades.html">Lista Maestra de Actividades</a>
+      <a href="Scout_Ajuste_Secuencia_Precedentes_Sucesoras.html">Ajuste de Secuencia y Dependencias</a>
+      <!-- <a href="Scout_Gantt_Detallado.html">Cronograma Gantt Detallado</a>-->
+      <a href="Scout_Ajuste_PERT_Detallado.html">Estimaciones PERT Detalladas</a>
+      
+      <div class="dropdown-group">Costos</div>
+      <a href="Scout_Tabla15_Estimacion_Costos_Actividad_Interactiva.html">Estimación Detallada de Costos</a>
+      <a href="Scout_Linea_Base_Costos.html">Línea Base de Costos</a>
+
+      <div class="dropdown-group">Recursos</div>
+      <a href="Scout_Recursos_por_Actividad.html">Estimación de Recursos por Actividad</a>
+
+      <div class="dropdown-group">Comunicaciones</div>
+      <a href="Scout_Matriz_Comunicaciones.html">Matriz de Comunicaciones</a>
+
+      <div class="dropdown-group">Riesgos</div>
+      <a href="Scout_Registro_Riesgos_Completo.html">Registro Completo de Riesgos</a>
+
+      <div class="dropdown-group">Adquisiciones</div>
+      <a href="Scout_Plan_Adquisiciones.html">Plan Detallado de Adquisiciones</a>
+
+      <div class="dropdown-group">Interesados</div>
+      <a href="Scout_Matriz_Interesados.html">Matriz de Interesados</a>
+
+      <!-- NUEVA SECCIÓN DE EJECUCIÓN -->
+      <div class="dropdown-group">Ejecución del Proyecto</div>
+      <a href="Scout_Cap3_Bitacora_Ejecucion_Actividades.html">Bitácora de Ejecución</a>
+      <a href="Scout_Cap3_Registro_Calidad_Defectos.html">Registro de Calidad y Defectos</a>
+      <a href="Scout_Cap3_Riesgos_Implementados.html">Riesgos Implementados</a>
+      <a href="Scout_Cap3_Comunicaciones_Ejecutadas.html">Comunicaciones Ejecutadas</a>
+      <a href="Scout_Cap3_Involucramiento_Interesados.html">Involucramiento de Interesados</a>
+    </div>
+  </div>
+</div>
+<!-- FIN DE NAVEGACIÓN GLOBAL -->
+
+  <section class="card">
+    <div class="toolbar">
+      <label>Buscar
+        <input id="search" type="search" placeholder="Buscar en todos los campos">
+      </label>
+      
+            <label>EDT
+              <select id="filter-0" data-field="EDT">
+                <option value="">Todos</option>
+                <option value="1.1.1">1.1.1</option><option value="1.1.2">1.1.2</option><option value="1.1.3">1.1.3</option><option value="1.1.4">1.1.4</option><option value="1.1.5">1.1.5</option><option value="1.1.6">1.1.6</option><option value="2.1.1">2.1.1</option><option value="2.1.2">2.1.2</option><option value="2.1.3">2.1.3</option><option value="2.1.4">2.1.4</option><option value="2.1.5">2.1.5</option><option value="2.2.1">2.2.1</option><option value="2.2.2">2.2.2</option><option value="2.2.3">2.2.3</option><option value="2.2.4">2.2.4</option><option value="2.2.5">2.2.5</option><option value="3.1.1">3.1.1</option><option value="3.1.2">3.1.2</option><option value="3.2.1">3.2.1</option><option value="3.2.2">3.2.2</option><option value="3.2.3">3.2.3</option><option value="3.3.1">3.3.1</option><option value="3.3.2">3.3.2</option><option value="3.3.3">3.3.3</option><option value="4.1.1">4.1.1</option><option value="4.1.2">4.1.2</option><option value="4.1.3">4.1.3</option><option value="4.2.1">4.2.1</option><option value="4.2.2">4.2.2</option><option value="4.2.3">4.2.3</option><option value="4.2.4">4.2.4</option><option value="4.2.5">4.2.5</option><option value="4.2.6">4.2.6</option><option value="4.2.7">4.2.7</option><option value="4.2.8">4.2.8</option><option value="5.1.1">5.1.1</option><option value="5.1.2">5.1.2</option><option value="5.1.3">5.1.3</option><option value="5.1.4">5.1.4</option><option value="5.2.1">5.2.1</option><option value="5.2.2">5.2.2</option><option value="5.2.3">5.2.3</option><option value="5.2.4">5.2.4</option><option value="5.3.1">5.3.1</option><option value="5.3.2">5.3.2</option><option value="5.3.3">5.3.3</option><option value="5.3.4">5.3.4</option><option value="5.3.5">5.3.5</option><option value="6.1.1">6.1.1</option><option value="6.1.2">6.1.2</option><option value="6.1.3">6.1.3</option><option value="6.2.1">6.2.1</option><option value="6.2.2">6.2.2</option><option value="6.2.3">6.2.3</option><option value="6.3.1">6.3.1</option><option value="6.3.2">6.3.2</option><option value="6.3.3">6.3.3</option><option value="6.3.4">6.3.4</option><option value="6.3.5">6.3.5</option><option value="7.1.1">7.1.1</option><option value="7.1.2">7.1.2</option><option value="7.2.1">7.2.1</option><option value="7.2.2">7.2.2</option><option value="7.2.3">7.2.3</option><option value="7.2.4">7.2.4</option><option value="7.3.1">7.3.1</option><option value="7.3.2">7.3.2</option><option value="7.3.3">7.3.3</option>
+              </select>
+            </label>
+            
+            <label>Responsable
+              <select id="filter-1" data-field="Responsable">
+                <option value="">Todos</option>
+                <option value="Agentes / Supervisores / Cliente">Agentes / Supervisores / Cliente</option><option value="Analista de datos">Analista de datos</option><option value="Analista de datos / Calidad">Analista de datos / Calidad</option><option value="Analista de negocio">Analista de negocio</option><option value="Analista de negocio / Product Owner">Analista de negocio / Product Owner</option><option value="Analista de procesos / Agentes">Analista de procesos / Agentes</option><option value="Arquitecto de solución">Arquitecto de solución</option><option value="Calidad / Datos">Calidad / Datos</option><option value="Calidad / Datos / Product Owner">Calidad / Datos / Product Owner</option><option value="Calidad / Datos / Seguridad">Calidad / Datos / Seguridad</option><option value="Calidad / Formación">Calidad / Formación</option><option value="Calidad / Product Owner">Calidad / Product Owner</option><option value="Calidad / Riesgos">Calidad / Riesgos</option><option value="Calidad / Seguridad / Cliente">Calidad / Seguridad / Cliente</option><option value="Change Manager">Change Manager</option><option value="Change Manager / Product Owner">Change Manager / Product Owner</option><option value="Comité directivo">Comité directivo</option><option value="Comité directivo / Cliente">Comité directivo / Cliente</option><option value="Coordinación del proyecto">Coordinación del proyecto</option><option value="Datos / Calidad">Datos / Calidad</option><option value="Datos / Seguridad / Legal">Datos / Seguridad / Legal</option><option value="Datos / TI">Datos / TI</option><option value="Equipo del proyecto">Equipo del proyecto</option><option value="Finanzas / Gerente de proyecto">Finanzas / Gerente de proyecto</option><option value="Formación / Calidad">Formación / Calidad</option><option value="Formación / Product Owner">Formación / Product Owner</option><option value="Formación / Supervisores">Formación / Supervisores</option><option value="Gerente de proyecto">Gerente de proyecto</option><option value="Gerente de proyecto / Líderes">Gerente de proyecto / Líderes</option><option value="Gerente de proyecto / Patrocinador">Gerente de proyecto / Patrocinador</option><option value="Gerente de proyecto / PMO">Gerente de proyecto / PMO</option><option value="Knowledge Manager">Knowledge Manager</option><option value="Knowledge Manager / Calidad">Knowledge Manager / Calidad</option><option value="Knowledge Manager / SMEs">Knowledge Manager / SMEs</option><option value="Operaciones">Operaciones</option><option value="Operaciones / Agentes">Operaciones / Agentes</option><option value="Operaciones / Calidad">Operaciones / Calidad</option><option value="Operaciones / Calidad / Cliente">Operaciones / Calidad / Cliente</option><option value="Operaciones / Calidad / Finanzas">Operaciones / Calidad / Finanzas</option><option value="Operaciones / Cliente">Operaciones / Cliente</option><option value="Operaciones / Formación">Operaciones / Formación</option><option value="Patrocinador / Cliente">Patrocinador / Cliente</option><option value="Product Owner / SMEs">Product Owner / SMEs</option><option value="Product Owner / TI">Product Owner / TI</option><option value="Proveedor / Datos">Proveedor / Datos</option><option value="Proveedor / TI">Proveedor / TI</option><option value="Proveedor / TI / Champions">Proveedor / TI / Champions</option><option value="Seguridad / Legal">Seguridad / Legal</option><option value="Supervisores / Formación">Supervisores / Formación</option><option value="TI / Knowledge Manager">TI / Knowledge Manager</option><option value="TI / Operaciones">TI / Operaciones</option><option value="TI / Product Owner">TI / Product Owner</option><option value="TI / Proveedor">TI / Proveedor</option><option value="TI / Seguridad">TI / Seguridad</option><option value="UX / Agentes / Supervisores">UX / Agentes / Supervisores</option><option value="UX / Product Owner">UX / Product Owner</option>
+              </select>
+            </label>
+            
+            <label>Estado
+              <select id="filter-2" data-field="Estado">
+                <option value="">Todos</option>
+                <option value="Aceptado">Aceptado</option><option value="Completada">Completada</option>
+              </select>
+            </label>
+            
+            <label>Crítica
+              <select id="filter-3" data-field="Crítica">
+                <option value="">Todos</option>
+                <option value="No">No</option><option value="Sí">Sí</option>
+              </select>
+            </label>
+            
+      <button id="reset" type="button">Restablecer</button>
+      <div id="status" class="status">Mostrando 68 de 68 registros</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="table-wrap">
+      <table id="data-table">
+        <thead><tr><th scope="col" data-column="0" data-type="text">ID <span class="sort">↕</span></th><th scope="col" data-column="1" data-type="text">EDT <span class="sort">↕</span></th><th scope="col" data-column="2" data-type="text">Actividad <span class="sort">↕</span></th><th scope="col" data-column="3" data-type="text">Responsable <span class="sort">↕</span></th><th scope="col" data-column="4" data-type="text">Inicio plan <span class="sort">↕</span></th><th scope="col" data-column="5" data-type="text">Fin plan <span class="sort">↕</span></th><th scope="col" data-column="6" data-type="text">Inicio real <span class="sort">↕</span></th><th scope="col" data-column="7" data-type="text">Fin real <span class="sort">↕</span></th><th scope="col" data-column="8" data-type="number">Variación días <span class="sort">↕</span></th><th scope="col" data-column="9" data-type="text">Estado <span class="sort">↕</span></th><th scope="col" data-column="10" data-type="text">Evidencia <span class="sort">↕</span></th><th scope="col" data-column="11" data-type="text">Issue/decisión <span class="sort">↕</span></th><th scope="col" data-column="12" data-type="text">Crítica <span class="sort">↕</span></th></tr></thead>
+        <tbody>
+          <tr data-row="1" data-filter-0="1.1.1" data-filter-1="Gerente de proyecto / Patrocinador" data-filter-2="Completada" data-filter-3="Sí"><td class="">A01</td><td class="">1.1.1</td><td class="">Realizar reunión de lanzamiento y confirmar mandato</td><td class="">Gerente de proyecto / Patrocinador</td><td class="">20/07/2026</td><td class="">20/07/2026</td><td class="">20/07/2026</td><td class="">20/07/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Acta de kickoff y acuerdos iniciales</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="2" data-filter-0="1.1.2" data-filter-1="Gerente de proyecto" data-filter-2="Completada" data-filter-3="No"><td class="">A02</td><td class="">1.1.2</td><td class="">Identificar y analizar interesados del piloto</td><td class="">Gerente de proyecto</td><td class="">20/07/2026</td><td class="">21/07/2026</td><td class="">20/07/2026</td><td class="">21/07/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Registro inicial de interesados</td><td class="">—</td><td class="">No</td></tr><tr data-row="3" data-filter-0="1.1.3" data-filter-1="Gerente de proyecto / Líderes" data-filter-2="Completada" data-filter-3="Sí"><td class="">A03</td><td class="">1.1.3</td><td class="">Consolidar el plan para la dirección del proyecto</td><td class="">Gerente de proyecto / Líderes</td><td class="">20/07/2026</td><td class="">22/07/2026</td><td class="">20/07/2026</td><td class="">22/07/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Plan integrado aprobado para ejecución</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="4" data-filter-0="1.1.4" data-filter-1="Gerente de proyecto / PMO" data-filter-2="Completada" data-filter-3="No"><td class="">A04</td><td class="">1.1.4</td><td class="">Configurar gobernanza, control de cambios y repositorio</td><td class="">Gerente de proyecto / PMO</td><td class="">21/07/2026</td><td class="">22/07/2026</td><td class="">21/07/2026</td><td class="">22/07/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Flujo de gobernanza y control</td><td class="">—</td><td class="">No</td></tr><tr data-row="5" data-filter-0="1.1.5" data-filter-1="Gerente de proyecto" data-filter-2="Completada" data-filter-3="No"><td class="">A05</td><td class="">1.1.5</td><td class="">Monitorear alcance, cronograma, costo y decisiones</td><td class="">Gerente de proyecto</td><td class="">20/07/2026</td><td class="">11/09/2026</td><td class="">20/07/2026</td><td class="">11/09/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Informes semanales y registro de decisiones</td><td class="">—</td><td class="">No</td></tr><tr data-row="6" data-filter-0="1.1.6" data-filter-1="Coordinación del proyecto" data-filter-2="Completada" data-filter-3="No"><td class="">A06</td><td class="">1.1.6</td><td class="">Administrar documentación, actas y evidencias</td><td class="">Coordinación del proyecto</td><td class="">20/07/2026</td><td class="">11/09/2026</td><td class="">20/07/2026</td><td class="">11/09/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Expediente actualizado del proyecto</td><td class="">—</td><td class="">No</td></tr><tr data-row="7" data-filter-0="2.1.1" data-filter-1="Analista de datos / Calidad" data-filter-2="Completada" data-filter-3="Sí"><td class="">A07</td><td class="">2.1.1</td><td class="">Confirmar indicadores, fórmulas y fuentes de línea base</td><td class="">Analista de datos / Calidad</td><td class="">20/07/2026</td><td class="">22/07/2026</td><td class="">20/07/2026</td><td class="">22/07/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Catálogo de ocho indicadores</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="8" data-filter-0="2.1.2" data-filter-1="Analista de datos" data-filter-2="Completada" data-filter-3="Sí"><td class="">A08</td><td class="">2.1.2</td><td class="">Extraer datos históricos y segmentar grupo de comparación</td><td class="">Analista de datos</td><td class="">20/07/2026</td><td class="">23/07/2026</td><td class="">20/07/2026</td><td class="">23/07/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Dataset de línea base</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="9" data-filter-0="2.1.3" data-filter-1="Operaciones / Calidad / Finanzas" data-filter-2="Completada" data-filter-3="Sí"><td class="">A09</td><td class="">2.1.3</td><td class="">Validar línea base con Operaciones, Calidad y Finanzas</td><td class="">Operaciones / Calidad / Finanzas</td><td class="">23/07/2026</td><td class="">24/07/2026</td><td class="">23/07/2026</td><td class="">24/07/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Línea base aprobada</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="10" data-filter-0="2.1.4" data-filter-1="Analista de procesos / Agentes" data-filter-2="Completada" data-filter-3="No"><td class="">A10</td><td class="">2.1.4</td><td class="">Mapear el proceso actual y puntos de decisión del agente</td><td class="">Analista de procesos / Agentes</td><td class="">21/07/2026</td><td class="">24/07/2026</td><td class="">21/07/2026</td><td class="">24/07/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Mapa AS-IS y puntos de dolor</td><td class="">—</td><td class="">No</td></tr><tr data-row="11" data-filter-0="2.1.5" data-filter-1="Operaciones / Calidad" data-filter-2="Completada" data-filter-3="Sí"><td class="">A11</td><td class="">2.1.5</td><td class="">Priorizar los 20 motivos de contacto del piloto</td><td class="">Operaciones / Calidad</td><td class="">23/07/2026</td><td class="">27/07/2026</td><td class="">23/07/2026</td><td class="">27/07/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Catálogo priorizado de motivos</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="12" data-filter-0="2.2.1" data-filter-1="Analista de negocio / Product Owner" data-filter-2="Completada" data-filter-3="Sí"><td class="">A12</td><td class="">2.2.1</td><td class="">Ejecutar entrevistas y talleres de requisitos</td><td class="">Analista de negocio / Product Owner</td><td class="">27/07/2026</td><td class="">28/07/2026</td><td class="">27/07/2026</td><td class="">28/07/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Minutas y necesidades consolidadas</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="13" data-filter-0="2.2.2" data-filter-1="Analista de negocio" data-filter-2="Completada" data-filter-3="Sí"><td class="">A13</td><td class="">2.2.2</td><td class="">Documentar, clasificar y priorizar requisitos</td><td class="">Analista de negocio</td><td class="">28/07/2026</td><td class="">29/07/2026</td><td class="">28/07/2026</td><td class="">29/07/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Registro de requisitos</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="14" data-filter-0="2.2.3" data-filter-1="UX / Agentes / Supervisores" data-filter-2="Completada" data-filter-3="No"><td class="">A14</td><td class="">2.2.3</td><td class="">Prototipar la experiencia del sidebar y validar usabilidad</td><td class="">UX / Agentes / Supervisores</td><td class="">29/07/2026</td><td class="">30/07/2026</td><td class="">29/07/2026</td><td class="">30/07/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Prototipo validado</td><td class="">—</td><td class="">No</td></tr><tr data-row="15" data-filter-0="2.2.4" data-filter-1="Comité directivo / Cliente" data-filter-2="Completada" data-filter-3="Sí"><td class="">A15</td><td class="">2.2.4</td><td class="">Validar alcance, exclusiones y criterios de aceptación</td><td class="">Comité directivo / Cliente</td><td class="">31/07/2026</td><td class="">31/07/2026</td><td class="">31/07/2026</td><td class="">31/07/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Enunciado del alcance aprobado</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="16" data-filter-0="2.2.5" data-filter-1="Operaciones / Cliente" data-filter-2="Aceptado" data-filter-3="Sí"><td class="">M01</td><td class="">2.2.5</td><td class="">Hito: diagnóstico y alcance aprobados</td><td class="">Operaciones / Cliente</td><td class="">02/08/2026</td><td class="">02/08/2026</td><td class="">02/08/2026</td><td class="">02/08/2026</td><td class="number">0</td><td class="">Aceptado</td><td class="">Aprobación de semana 2</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="17" data-filter-0="3.1.1" data-filter-1="Knowledge Manager" data-filter-2="Completada" data-filter-3="No"><td class="">A16</td><td class="">3.1.1</td><td class="">Inventariar los 60 artículos de conocimiento</td><td class="">Knowledge Manager</td><td class="">27/07/2026</td><td class="">29/07/2026</td><td class="">27/07/2026</td><td class="">29/07/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Inventario de artículos</td><td class="">—</td><td class="">No</td></tr><tr data-row="18" data-filter-0="3.1.2" data-filter-1="Knowledge Manager / Calidad" data-filter-2="Completada" data-filter-3="No"><td class="">A17</td><td class="">3.1.2</td><td class="">Asignar propietarios, vigencia y control de versiones</td><td class="">Knowledge Manager / Calidad</td><td class="">29/07/2026</td><td class="">30/07/2026</td><td class="">29/07/2026</td><td class="">30/07/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Matriz de propietarios y vigencia</td><td class="">—</td><td class="">No</td></tr><tr data-row="19" data-filter-0="3.2.1" data-filter-1="Datos / TI" data-filter-2="Completada" data-filter-3="Sí"><td class="">A18</td><td class="">3.2.1</td><td class="">Extraer 3,000 interacciones históricas</td><td class="">Datos / TI</td><td class="">27/07/2026</td><td class="">30/07/2026</td><td class="">27/07/2026</td><td class="">30/07/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Muestra histórica extraída</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="20" data-filter-0="3.2.2" data-filter-1="Datos / Seguridad / Legal" data-filter-2="Completada" data-filter-3="Sí"><td class="">A19</td><td class="">3.2.2</td><td class="">Anonimizar y aplicar controles de privacidad</td><td class="">Datos / Seguridad / Legal</td><td class="">29/07/2026</td><td class="">03/08/2026</td><td class="">29/07/2026</td><td class="">03/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Dataset anonimizado</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="21" data-filter-0="3.2.3" data-filter-1="Calidad / Datos" data-filter-2="Completada" data-filter-3="Sí"><td class="">A20</td><td class="">3.2.3</td><td class="">Definir taxonomía, etiquetas e intención objetivo</td><td class="">Calidad / Datos</td><td class="">30/07/2026</td><td class="">03/08/2026</td><td class="">30/07/2026</td><td class="">03/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Taxonomía aprobada</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="22" data-filter-0="3.3.1" data-filter-1="Knowledge Manager / SMEs" data-filter-2="Completada" data-filter-3="Sí"><td class="">A21</td><td class="">3.3.1</td><td class="">Depurar, actualizar y normalizar artículos</td><td class="">Knowledge Manager / SMEs</td><td class="">31/07/2026</td><td class="">07/08/2026</td><td class="">01/08/2026</td><td class="">08/08/2026</td><td class="number">1</td><td class="">Completada</td><td class="">60 artículos depurados</td><td class="">ISS-04</td><td class="">Sí</td></tr><tr data-row="23" data-filter-0="3.3.2" data-filter-1="Calidad / Datos" data-filter-2="Completada" data-filter-3="Sí"><td class="">A22</td><td class="">3.3.2</td><td class="">Etiquetar y validar muestra de entrenamiento</td><td class="">Calidad / Datos</td><td class="">04/08/2026</td><td class="">07/08/2026</td><td class="">04/08/2026</td><td class="">07/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Muestra etiquetada y controlada</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="24" data-filter-0="3.3.3" data-filter-1="Calidad / Seguridad / Cliente" data-filter-2="Completada" data-filter-3="Sí"><td class="">A23</td><td class="">3.3.3</td><td class="">Aprobar base de conocimiento y dataset de configuración</td><td class="">Calidad / Seguridad / Cliente</td><td class="">10/08/2026</td><td class="">10/08/2026</td><td class="">10/08/2026</td><td class="">10/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Datos y conocimiento aprobados</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="25" data-filter-0="4.1.1" data-filter-1="Arquitecto de solución" data-filter-2="Completada" data-filter-3="No"><td class="">A24</td><td class="">4.1.1</td><td class="">Diseñar arquitectura e interfaces de integración</td><td class="">Arquitecto de solución</td><td class="">29/07/2026</td><td class="">03/08/2026</td><td class="">29/07/2026</td><td class="">03/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Diseño de arquitectura</td><td class="">—</td><td class="">No</td></tr><tr data-row="26" data-filter-0="4.1.2" data-filter-1="Proveedor / TI" data-filter-2="Completada" data-filter-3="Sí"><td class="">A25</td><td class="">4.1.2</td><td class="">Provisionar ambientes, accesos y licencias del piloto</td><td class="">Proveedor / TI</td><td class="">03/08/2026</td><td class="">04/08/2026</td><td class="">03/08/2026</td><td class="">04/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Ambientes habilitados</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="27" data-filter-0="4.1.3" data-filter-1="UX / Product Owner" data-filter-2="Completada" data-filter-3="No"><td class="">A26</td><td class="">4.1.3</td><td class="">Completar diseño funcional y visual del sidebar</td><td class="">UX / Product Owner</td><td class="">03/08/2026</td><td class="">05/08/2026</td><td class="">03/08/2026</td><td class="">05/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Especificación de interfaz</td><td class="">—</td><td class="">No</td></tr><tr data-row="28" data-filter-0="4.2.1" data-filter-1="Proveedor / Datos" data-filter-2="Completada" data-filter-3="Sí"><td class="">A27</td><td class="">4.2.1</td><td class="">Configurar modelo base y parámetros del piloto</td><td class="">Proveedor / Datos</td><td class="">04/08/2026</td><td class="">07/08/2026</td><td class="">04/08/2026</td><td class="">07/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Modelo base configurado</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="29" data-filter-0="4.2.2" data-filter-1="Datos / Calidad" data-filter-2="Completada" data-filter-3="Sí"><td class="">A28</td><td class="">4.2.2</td><td class="">Configurar intenciones y entidades prioritarias</td><td class="">Datos / Calidad</td><td class="">05/08/2026</td><td class="">10/08/2026</td><td class="">05/08/2026</td><td class="">10/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Intenciones y entidades configuradas</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="30" data-filter-0="4.2.3" data-filter-1="Product Owner / SMEs" data-filter-2="Completada" data-filter-3="Sí"><td class="">A29</td><td class="">4.2.3</td><td class="">Configurar reglas de siguiente mejor acción</td><td class="">Product Owner / SMEs</td><td class="">06/08/2026</td><td class="">11/08/2026</td><td class="">07/08/2026</td><td class="">12/08/2026</td><td class="number">1</td><td class="">Completada</td><td class="">Reglas NBA configuradas</td><td class="">ISS-07</td><td class="">Sí</td></tr><tr data-row="31" data-filter-0="4.2.4" data-filter-1="Calidad / Formación" data-filter-2="Completada" data-filter-3="No"><td class="">A30</td><td class="">4.2.4</td><td class="">Configurar scripts, prompts y plantillas editables</td><td class="">Calidad / Formación</td><td class="">07/08/2026</td><td class="">12/08/2026</td><td class="">07/08/2026</td><td class="">12/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Biblioteca de guiones</td><td class="">—</td><td class="">No</td></tr><tr data-row="32" data-filter-0="4.2.5" data-filter-1="Calidad / Riesgos" data-filter-2="Completada" data-filter-3="No"><td class="">A31</td><td class="">4.2.5</td><td class="">Configurar señales de sentimiento y riesgo</td><td class="">Calidad / Riesgos</td><td class="">10/08/2026</td><td class="">12/08/2026</td><td class="">10/08/2026</td><td class="">12/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Alertas configuradas</td><td class="">—</td><td class="">No</td></tr><tr data-row="33" data-filter-0="4.2.6" data-filter-1="Product Owner / TI" data-filter-2="Completada" data-filter-3="No"><td class="">A32</td><td class="">4.2.6</td><td class="">Configurar resumen, disposición y retroalimentación</td><td class="">Product Owner / TI</td><td class="">10/08/2026</td><td class="">13/08/2026</td><td class="">10/08/2026</td><td class="">13/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Resumen y feedback habilitados</td><td class="">—</td><td class="">No</td></tr><tr data-row="34" data-filter-0="4.2.7" data-filter-1="Calidad / Datos / Product Owner" data-filter-2="Completada" data-filter-3="Sí"><td class="">A33</td><td class="">4.2.7</td><td class="">Revisar precisión y completar ajuste de configuración</td><td class="">Calidad / Datos / Product Owner</td><td class="">14/08/2026</td><td class="">14/08/2026</td><td class="">14/08/2026</td><td class="">14/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Versión candidata para pruebas</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="35" data-filter-0="4.2.8" data-filter-1="Calidad / Datos / Seguridad" data-filter-2="Aceptado" data-filter-3="Sí"><td class="">M02</td><td class="">4.2.8</td><td class="">Hito: modelo y reglas listos para PAU</td><td class="">Calidad / Datos / Seguridad</td><td class="">16/08/2026</td><td class="">16/08/2026</td><td class="">16/08/2026</td><td class="">16/08/2026</td><td class="number">0</td><td class="">Aceptado</td><td class="">Aprobación de semana 4</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="36" data-filter-0="5.1.1" data-filter-1="TI / Proveedor" data-filter-2="Completada" data-filter-3="Sí"><td class="">A34</td><td class="">5.1.1</td><td class="">Desarrollar integración con telefonía y transcripción</td><td class="">TI / Proveedor</td><td class="">05/08/2026</td><td class="">11/08/2026</td><td class="">05/08/2026</td><td class="">12/08/2026</td><td class="number">1</td><td class="">Completada</td><td class="">Flujo de audio y transcripción</td><td class="">ISS-08</td><td class="">Sí</td></tr><tr data-row="37" data-filter-0="5.1.2" data-filter-1="TI / Proveedor" data-filter-2="Completada" data-filter-3="Sí"><td class="">A35</td><td class="">5.1.2</td><td class="">Desarrollar integración con SGC y resumen de caso</td><td class="">TI / Proveedor</td><td class="">06/08/2026</td><td class="">12/08/2026</td><td class="">06/08/2026</td><td class="">13/08/2026</td><td class="number">1</td><td class="">Completada</td><td class="">Contexto y borrador de resumen</td><td class="">ISS-09</td><td class="">Sí</td></tr><tr data-row="38" data-filter-0="5.1.3" data-filter-1="TI / Knowledge Manager" data-filter-2="Completada" data-filter-3="No"><td class="">A36</td><td class="">5.1.3</td><td class="">Integrar repositorio de conocimiento validado</td><td class="">TI / Knowledge Manager</td><td class="">05/08/2026</td><td class="">10/08/2026</td><td class="">05/08/2026</td><td class="">10/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Conector de conocimiento</td><td class="">—</td><td class="">No</td></tr><tr data-row="39" data-filter-0="5.1.4" data-filter-1="TI / Seguridad" data-filter-2="Completada" data-filter-3="No"><td class="">A37</td><td class="">5.1.4</td><td class="">Configurar autenticación, perfiles y permisos</td><td class="">TI / Seguridad</td><td class="">07/08/2026</td><td class="">11/08/2026</td><td class="">07/08/2026</td><td class="">11/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Matriz de accesos aplicada</td><td class="">—</td><td class="">No</td></tr><tr data-row="40" data-filter-0="5.2.1" data-filter-1="TI / Proveedor" data-filter-2="Completada" data-filter-3="Sí"><td class="">A38</td><td class="">5.2.1</td><td class="">Ejecutar pruebas unitarias y de integración</td><td class="">TI / Proveedor</td><td class="">12/08/2026</td><td class="">14/08/2026</td><td class="">12/08/2026</td><td class="">14/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Resultados de pruebas técnicas</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="41" data-filter-0="5.2.2" data-filter-1="TI / Proveedor" data-filter-2="Completada" data-filter-3="No"><td class="">A39</td><td class="">5.2.2</td><td class="">Ejecutar pruebas de rendimiento, carga y latencia</td><td class="">TI / Proveedor</td><td class="">13/08/2026</td><td class="">17/08/2026</td><td class="">13/08/2026</td><td class="">17/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Informe de rendimiento</td><td class="">—</td><td class="">No</td></tr><tr data-row="42" data-filter-0="5.2.3" data-filter-1="Seguridad / Legal" data-filter-2="Completada" data-filter-3="Sí"><td class="">A40</td><td class="">5.2.3</td><td class="">Completar evaluación de privacidad y seguridad</td><td class="">Seguridad / Legal</td><td class="">12/08/2026</td><td class="">18/08/2026</td><td class="">12/08/2026</td><td class="">19/08/2026</td><td class="number">1</td><td class="">Completada</td><td class="">Aprobación de privacidad y seguridad</td><td class="">ISS-11</td><td class="">Sí</td></tr><tr data-row="43" data-filter-0="5.2.4" data-filter-1="TI / Proveedor" data-filter-2="Completada" data-filter-3="Sí"><td class="">A41</td><td class="">5.2.4</td><td class="">Corregir defectos técnicos y de seguridad</td><td class="">TI / Proveedor</td><td class="">17/08/2026</td><td class="">19/08/2026</td><td class="">17/08/2026</td><td class="">19/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Defectos críticos cerrados</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="44" data-filter-0="5.3.1" data-filter-1="Calidad / Product Owner" data-filter-2="Completada" data-filter-3="No"><td class="">A42</td><td class="">5.3.1</td><td class="">Diseñar casos y criterios de PAU</td><td class="">Calidad / Product Owner</td><td class="">13/08/2026</td><td class="">17/08/2026</td><td class="">13/08/2026</td><td class="">17/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Plan de PAU</td><td class="">—</td><td class="">No</td></tr><tr data-row="45" data-filter-0="5.3.2" data-filter-1="Agentes / Supervisores / Cliente" data-filter-2="Completada" data-filter-3="Sí"><td class="">A43</td><td class="">5.3.2</td><td class="">Ejecutar Pruebas de Aceptación del Usuario</td><td class="">Agentes / Supervisores / Cliente</td><td class="">19/08/2026</td><td class="">20/08/2026</td><td class="">19/08/2026</td><td class="">20/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Resultados de PAU</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="46" data-filter-0="5.3.3" data-filter-1="TI / Product Owner" data-filter-2="Completada" data-filter-3="Sí"><td class="">A44</td><td class="">5.3.3</td><td class="">Corregir hallazgos y ejecutar revalidación</td><td class="">TI / Product Owner</td><td class="">20/08/2026</td><td class="">21/08/2026</td><td class="">20/08/2026</td><td class="">21/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">PAU aprobada</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="47" data-filter-0="5.3.4" data-filter-1="Gerente de proyecto" data-filter-2="Completada" data-filter-3="Sí"><td class="">A45</td><td class="">5.3.4</td><td class="">Consolidar paquete de preparación y recomendación go/no-go</td><td class="">Gerente de proyecto</td><td class="">21/08/2026</td><td class="">21/08/2026</td><td class="">21/08/2026</td><td class="">21/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Paquete de decisión</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="48" data-filter-0="5.3.5" data-filter-1="Comité directivo" data-filter-2="Aceptado" data-filter-3="Sí"><td class="">M03</td><td class="">5.3.5</td><td class="">Hito: PAU, capacitación y go/no-go aprobados</td><td class="">Comité directivo</td><td class="">23/08/2026</td><td class="">23/08/2026</td><td class="">23/08/2026</td><td class="">23/08/2026</td><td class="number">0</td><td class="">Aceptado</td><td class="">Autorización del piloto</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="49" data-filter-0="6.1.1" data-filter-1="Change Manager" data-filter-2="Completada" data-filter-3="No"><td class="">A46</td><td class="">6.1.1</td><td class="">Preparar plan de cambio, comunicaciones y soporte</td><td class="">Change Manager</td><td class="">10/08/2026</td><td class="">13/08/2026</td><td class="">10/08/2026</td><td class="">13/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Plan de adopción</td><td class="">—</td><td class="">No</td></tr><tr data-row="50" data-filter-0="6.1.2" data-filter-1="Formación / Calidad" data-filter-2="Completada" data-filter-3="No"><td class="">A47</td><td class="">6.1.2</td><td class="">Desarrollar materiales, guías y simulaciones</td><td class="">Formación / Calidad</td><td class="">12/08/2026</td><td class="">17/08/2026</td><td class="">12/08/2026</td><td class="">17/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Kit de capacitación</td><td class="">—</td><td class="">No</td></tr><tr data-row="51" data-filter-0="6.1.3" data-filter-1="Operaciones / Formación" data-filter-2="Completada" data-filter-3="No"><td class="">A48</td><td class="">6.1.3</td><td class="">Seleccionar y preparar champions operativos</td><td class="">Operaciones / Formación</td><td class="">17/08/2026</td><td class="">17/08/2026</td><td class="">17/08/2026</td><td class="">17/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Red de champions</td><td class="">—</td><td class="">No</td></tr><tr data-row="52" data-filter-0="6.2.1" data-filter-1="Formación / Product Owner" data-filter-2="Completada" data-filter-3="No"><td class="">A49</td><td class="">6.2.1</td><td class="">Capacitar supervisores y equipo de soporte</td><td class="">Formación / Product Owner</td><td class="">18/08/2026</td><td class="">18/08/2026</td><td class="">18/08/2026</td><td class="">18/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Supervisores capacitados</td><td class="">—</td><td class="">No</td></tr><tr data-row="53" data-filter-0="6.2.2" data-filter-1="Formación / Supervisores" data-filter-2="Completada" data-filter-3="Sí"><td class="">A50</td><td class="">6.2.2</td><td class="">Capacitar agentes y completar evaluación de aprendizaje</td><td class="">Formación / Supervisores</td><td class="">18/08/2026</td><td class="">21/08/2026</td><td class="">18/08/2026</td><td class="">21/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">≥95% de usuarios capacitados</td><td class="">ISS-14</td><td class="">Sí</td></tr><tr data-row="54" data-filter-0="6.2.3" data-filter-1="Operaciones / Agentes" data-filter-2="Completada" data-filter-3="Sí"><td class="">A51</td><td class="">6.2.3</td><td class="">Ejecutar modo sombra y encuesta de preparación</td><td class="">Operaciones / Agentes</td><td class="">20/08/2026</td><td class="">21/08/2026</td><td class="">20/08/2026</td><td class="">21/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Readiness y ajustes finales</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="55" data-filter-0="6.3.1" data-filter-1="Operaciones / Cliente" data-filter-2="Aceptado" data-filter-3="Sí"><td class="">M04</td><td class="">6.3.1</td><td class="">Hito: lanzamiento controlado del piloto</td><td class="">Operaciones / Cliente</td><td class="">24/08/2026</td><td class="">24/08/2026</td><td class="">24/08/2026</td><td class="">24/08/2026</td><td class="number">0</td><td class="">Aceptado</td><td class="">Piloto en producción controlada</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="56" data-filter-0="6.3.2" data-filter-1="Proveedor / TI / Champions" data-filter-2="Completada" data-filter-3="Sí"><td class="">A52</td><td class="">6.3.2</td><td class="">Ejecutar hiperacompañamiento de lanzamiento</td><td class="">Proveedor / TI / Champions</td><td class="">24/08/2026</td><td class="">28/08/2026</td><td class="">24/08/2026</td><td class="">28/08/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Incidentes y dudas atendidos</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="57" data-filter-0="6.3.3" data-filter-1="Supervisores / Formación" data-filter-2="Completada" data-filter-3="No"><td class="">A53</td><td class="">6.3.3</td><td class="">Aplicar nudges de adopción y coaching focalizado</td><td class="">Supervisores / Formación</td><td class="">24/08/2026</td><td class="">04/09/2026</td><td class="">24/08/2026</td><td class="">04/09/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Adopción sostenida</td><td class="">—</td><td class="">No</td></tr><tr data-row="58" data-filter-0="6.3.4" data-filter-1="TI / Operaciones" data-filter-2="Completada" data-filter-3="Sí"><td class="">A54</td><td class="">6.3.4</td><td class="">Estabilizar operación y cerrar incidencias prioritarias</td><td class="">TI / Operaciones</td><td class="">31/08/2026</td><td class="">04/09/2026</td><td class="">31/08/2026</td><td class="">03/09/2026</td><td class="number">-1</td><td class="">Completada</td><td class="">Piloto estabilizado</td><td class="">ISS-17</td><td class="">Sí</td></tr><tr data-row="59" data-filter-0="6.3.5" data-filter-1="Operaciones" data-filter-2="Aceptado" data-filter-3="Sí"><td class="">M05</td><td class="">6.3.5</td><td class="">Hito: piloto estabilizado</td><td class="">Operaciones</td><td class="">06/09/2026</td><td class="">06/09/2026</td><td class="">06/09/2026</td><td class="">06/09/2026</td><td class="number">0</td><td class="">Aceptado</td><td class="">Aprobación de semana 7</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="60" data-filter-0="7.1.1" data-filter-1="Datos / Calidad" data-filter-2="Completada" data-filter-3="Sí"><td class="">A55</td><td class="">7.1.1</td><td class="">Capturar resultados de KPIs y disponibilidad</td><td class="">Datos / Calidad</td><td class="">24/08/2026</td><td class="">04/09/2026</td><td class="">24/08/2026</td><td class="">04/09/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Serie de resultados del piloto</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="61" data-filter-0="7.1.2" data-filter-1="Change Manager / Product Owner" data-filter-2="Completada" data-filter-3="No"><td class="">A56</td><td class="">7.1.2</td><td class="">Medir adopción, utilidad y retroalimentación</td><td class="">Change Manager / Product Owner</td><td class="">24/08/2026</td><td class="">04/09/2026</td><td class="">24/08/2026</td><td class="">04/09/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Informe de adopción</td><td class="">—</td><td class="">No</td></tr><tr data-row="62" data-filter-0="7.2.1" data-filter-1="Datos / Calidad" data-filter-2="Completada" data-filter-3="Sí"><td class="">A57</td><td class="">7.2.1</td><td class="">Comparar piloto contra línea base y grupo de referencia</td><td class="">Datos / Calidad</td><td class="">07/09/2026</td><td class="">08/09/2026</td><td class="">07/09/2026</td><td class="">08/09/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Análisis comparativo</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="63" data-filter-0="7.2.2" data-filter-1="Operaciones / Calidad / Cliente" data-filter-2="Completada" data-filter-3="Sí"><td class="">A58</td><td class="">7.2.2</td><td class="">Validar resultados operativos con áreas responsables</td><td class="">Operaciones / Calidad / Cliente</td><td class="">08/09/2026</td><td class="">09/09/2026</td><td class="">08/09/2026</td><td class="">09/09/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Resultados validados</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="64" data-filter-0="7.2.3" data-filter-1="Finanzas / Gerente de proyecto" data-filter-2="Completada" data-filter-3="Sí"><td class="">A59</td><td class="">7.2.3</td><td class="">Actualizar caso financiero, B/C y payback</td><td class="">Finanzas / Gerente de proyecto</td><td class="">09/09/2026</td><td class="">10/09/2026</td><td class="">09/09/2026</td><td class="">10/09/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Caso de negocio actualizado</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="65" data-filter-0="7.2.4" data-filter-1="Equipo del proyecto" data-filter-2="Completada" data-filter-3="No"><td class="">A60</td><td class="">7.2.4</td><td class="">Consolidar lecciones aprendidas y recomendaciones</td><td class="">Equipo del proyecto</td><td class="">09/09/2026</td><td class="">10/09/2026</td><td class="">09/09/2026</td><td class="">10/09/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Registro de lecciones</td><td class="">—</td><td class="">No</td></tr><tr data-row="66" data-filter-0="7.3.1" data-filter-1="Gerente de proyecto" data-filter-2="Completada" data-filter-3="Sí"><td class="">A61</td><td class="">7.3.1</td><td class="">Preparar informe final y recomendación de escalamiento</td><td class="">Gerente de proyecto</td><td class="">10/09/2026</td><td class="">11/09/2026</td><td class="">10/09/2026</td><td class="">11/09/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Informe final</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="67" data-filter-0="7.3.2" data-filter-1="Gerente de proyecto" data-filter-2="Completada" data-filter-3="Sí"><td class="">A62</td><td class="">7.3.2</td><td class="">Preparar presentación ejecutiva y paquete de cierre</td><td class="">Gerente de proyecto</td><td class="">11/09/2026</td><td class="">11/09/2026</td><td class="">11/09/2026</td><td class="">11/09/2026</td><td class="number">0</td><td class="">Completada</td><td class="">Paquete ejecutivo</td><td class="">—</td><td class="">Sí</td></tr><tr data-row="68" data-filter-0="7.3.3" data-filter-1="Patrocinador / Cliente" data-filter-2="Aceptado" data-filter-3="Sí"><td class="">M06</td><td class="">7.3.3</td><td class="">Hito: cierre y decisión ejecutiva de escalamiento</td><td class="">Patrocinador / Cliente</td><td class="">13/09/2026</td><td class="">13/09/2026</td><td class="">13/09/2026</td><td class="">13/09/2026</td><td class="number">0</td><td class="">Aceptado</td><td class="">Cierre del piloto</td><td class="">—</td><td class="">Sí</td></tr>
+        </tbody>
+      </table>
+      <div id="no-results" class="no-results">No se encontraron registros con los filtros aplicados.</div>
+    </div>
+    <p class="note">Fuente: Elaboración propia. Información ficticia preparada exclusivamente para fines académicos.</p>
+  </section>
+</main>
+<script>
+(() => {
+  "use strict";
+
+  const table = document.getElementById("data-table");
+  const tbody = table.tBodies[0];
+  const rows = Array.from(tbody.rows);
+  const search = document.getElementById("search");
+  const filterSelects = Array.from(document.querySelectorAll("select[id^='filter-']"));
+  const status = document.getElementById("status");
+  const noResults = document.getElementById("no-results");
+  const total = rows.length;
+  let sortColumn = -1;
+  let sortDirection = 1;
+
+  const normalize = value => String(value ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+
+  function applyFilters() {
+    const query = normalize(search.value);
+    let visible = 0;
+
+    rows.forEach(row => {
+      const matchesSearch = !query || normalize(row.textContent).includes(query);
+      const matchesFilters = filterSelects.every((select, index) => {
+        const selected = select.value;
+        return !selected || row.getAttribute(`data-filter-${index}`) === selected;
+      });
+      const show = matchesSearch && matchesFilters;
+      row.hidden = !show;
+      if (show) visible += 1;
+    });
+
+    status.textContent = `Mostrando ${visible} de ${total} registros`;
+    noResults.style.display = visible === 0 ? "block" : "none";
+  }
+
+  function parseNumber(value) {
+    const cleaned = String(value).replace(/[^0-9.-]/g, "");
+    const number = Number(cleaned);
+    return Number.isFinite(number) ? number : 0;
+  }
+
+  table.querySelectorAll("th").forEach((th, columnIndex) => {
+    th.addEventListener("click", () => {
+      const type = th.dataset.type || "text";
+      if (sortColumn === columnIndex) {
+        sortDirection *= -1;
+      } else {
+        sortColumn = columnIndex;
+        sortDirection = 1;
+      }
+
+      const sorted = rows.slice().sort((a, b) => {
+        const av = a.cells[columnIndex].textContent.trim();
+        const bv = b.cells[columnIndex].textContent.trim();
+        if (type === "number") {
+          return (parseNumber(av) - parseNumber(bv)) * sortDirection;
+        }
+        return av.localeCompare(bv, "es", { numeric:true, sensitivity:"base" }) * sortDirection;
+      });
+
+      sorted.forEach(row => tbody.appendChild(row));
+      table.querySelectorAll(".sort").forEach(icon => icon.textContent = "↕");
+      th.querySelector(".sort").textContent = sortDirection === 1 ? "↑" : "↓";
+    });
+  });
+
+  search.addEventListener("input", applyFilters);
+  filterSelects.forEach(select => select.addEventListener("change", applyFilters));
+
+  document.getElementById("reset").addEventListener("click", () => {
+    search.value = "";
+    filterSelects.forEach(select => select.value = "");
+    applyFilters();
+  });
+
+  applyFilters();
+})();
+</script>
+</body>
+</html>

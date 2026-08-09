@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Registro de calidad y defectos</title>
+<style>
+:root {
+  --navy:#1f365c;
+  --navy2:#2d4c7e;
+  --gold:#f6b82e;
+  --bg:#f4f6fa;
+  --ink:#1c2430;
+  --muted:#64748b;
+  --line:#d7dde6;
+  --soft:#eef2f7;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  font-family:"Segoe UI",Arial,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+}
+header {
+  background:linear-gradient(110deg,var(--gold),var(--navy));
+  color:white;
+  padding:28px 34px;
+}
+header h1 { margin:0 0 7px; font-size:28px; }
+header p { margin:0; opacity:.96; }
+main { max-width:1800px; margin:auto; padding:22px 28px 34px; }
+.card {
+  background:white;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:18px;
+  margin-bottom:18px;
+  box-shadow:0 3px 12px rgba(31,54,92,.08);
+}
+.toolbar {
+  display:flex;
+  align-items:end;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.toolbar label {
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  font-size:12px;
+  color:#475569;
+}
+.toolbar input,.toolbar select,.toolbar button {
+  height:40px;
+  padding:8px 11px;
+  border:1px solid #c7cfda;
+  border-radius:7px;
+  background:white;
+  font-size:14px;
+}
+.toolbar input { min-width:320px; }
+.toolbar button {
+  border:0;
+  background:#687587;
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+}
+.toolbar button:hover { background:#536071; }
+.status {
+  margin-left:auto;
+  padding:10px 0;
+  color:var(--muted);
+  font-size:13px;
+}
+.table-wrap {
+  overflow:auto;
+  max-height:72vh;
+  border:1px solid var(--line);
+  border-radius:8px;
+}
+table {
+  width:100%;
+  min-width:1400px;
+  border-collapse:separate;
+  border-spacing:0;
+  font-size:13px;
+}
+th {
+  position:sticky;
+  top:0;
+  z-index:3;
+  background:var(--navy);
+  color:white;
+  text-align:left;
+  cursor:pointer;
+  user-select:none;
+}
+th:hover { background:var(--navy2); }
+th,td {
+  padding:9px 10px;
+  border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  vertical-align:top;
+}
+th:last-child,td:last-child { border-right:0; }
+tbody tr:nth-child(even) { background:#f8fafc; }
+tbody tr:hover { background:#edf4ff; }
+.number { text-align:right; white-space:nowrap; }
+.sort { opacity:.65; margin-left:5px; }
+.note {
+  margin:14px 0 0;
+  color:var(--muted);
+  font-size:13px;
+  font-style:italic;
+}
+.no-results {
+  display:none;
+  padding:20px;
+  text-align:center;
+  color:var(--muted);
+}
+@media(max-width:900px) {
+  main { padding:14px; }
+  header { padding:24px 18px; }
+  .toolbar input { min-width:220px; }
+  .status { width:100%; margin-left:0; }
+}
+@media print {
+  body { background:white; }
+  header,.toolbar { display:none!important; }
+  main { padding:0; max-width:none; }
+  .card { box-shadow:none; border:0; padding:0; }
+  .table-wrap { max-height:none; overflow:visible; border:0; }
+  table { min-width:0; font-size:8px; }
+  th { position:static; }
+}
+
+/* --- ESTILOS DE NAVEGACIÓN GLOBAL --- */
+.global-nav {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* Botón Home */
+.btn-home {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--navy, #1f365c); /* Usa el azul marino de tu paleta */
+  color: white;
+  padding: 9px 16px;
+  border-radius: 7px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: background-color 0.2s ease;
+}
+.btn-home:hover {
+  background-color: #2d4c7e; /* Un tono más claro al pasar el mouse */
+  color: white;
+}
+
+/* Dropdown Container */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Button */
+.btn-dropdown {
+  background-color: white;
+  color: #475569;
+  padding: 9px 16px;
+  border: 1px solid #c8d0dc;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  font-family: inherit;
+}
+.btn-dropdown:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+}
+
+/* Dropdown Menu Contenido (Oculto por defecto) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 260px;
+  max-height: 70vh; /* Controla que el menú no sea más alto que el 70% de la pantalla */
+  overflow-y: auto; /* Agrega barra de desplazamiento si el contenido excede el alto máximo */
+  box-shadow: 0px 8px 16px 0px rgba(31,54,92,0.15);
+  border: 1px solid #dce2ea;
+  border-radius: 8px;
+  z-index: 100;
+  top: 110%; /* Aparece justo debajo del botón */
+  left: 0;
+  padding: 8px 0;
+}
+
+/* Mostrar el menú al hacer hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Títulos de agrupación en el menú */
+.dropdown-group {
+  padding: 8px 16px 4px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Enlaces del menú */
+.dropdown-content a {
+  color: var(--ink, #1c2430);
+  padding: 8px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.dropdown-content a:hover {
+  background-color: #edf4ff; /* Fondo azul muy suave al pasar el mouse */
+  color: var(--navy, #1f365c);
+}
+
+/* Ocultar en impresión */
+@media print {
+  .global-nav { display: none !important; }
+}
+/* ------------------------------------ */
+
+</style>
+</head>
+<body>
+<header>
+  <h1>Registro de calidad y defectos</h1>
+  <p>Capítulo 3 — Ejecución | Proyecto Scout en Everline Solutions</p>
+</header>
+<main>
+  <!-- INCIO DE NAVEGACIÓN GLOBAL -->
+<div class="global-nav">
+  <!-- Botón Home -->
+  <a href="index.html" class="btn-home">
+    <!-- Icono de casita SVG -->
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px; vertical-align: text-bottom;">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+    Volver al Índice
+  </a>
+
+  <!-- Dropdown Menu -->
+  <div class="dropdown">
+    <button class="btn-dropdown">
+      Ir a otro anexo
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 6px; vertical-align: middle;">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+    <div class="dropdown-content">
+      <div class="dropdown-group">Alcance y Requisitos</div>
+      <a href="Scout_Tabla3_Registro_Requisitos_Interactivo.html">Registro Consolidado de Requisitos</a>
+      <a href="Scout_Tabla4_Matriz_Trazabilidad_Requisitos_Interactiva.html">Matriz de Trazabilidad</a>
+      <a href="Scout_WBS_Interactiva.html">EDT / WBS Interactiva</a>
+      <a href="Scout_Diccionario_EDT_Completo.html">Diccionario de la EDT</a>
+      
+      <div class="dropdown-group">Cronograma</div>
+      <a href="Scout_Tabla9_Lista maestra de actividades.html">Lista Maestra de Actividades</a>
+      <a href="Scout_Ajuste_Secuencia_Precedentes_Sucesoras.html">Ajuste de Secuencia y Dependencias</a>
+      <!-- <a href="Scout_Gantt_Detallado.html">Cronograma Gantt Detallado</a>-->
+      <a href="Scout_Ajuste_PERT_Detallado.html">Estimaciones PERT Detalladas</a>
+      
+      <div class="dropdown-group">Costos</div>
+      <a href="Scout_Tabla15_Estimacion_Costos_Actividad_Interactiva.html">Estimación Detallada de Costos</a>
+      <a href="Scout_Linea_Base_Costos.html">Línea Base de Costos</a>
+
+      <div class="dropdown-group">Recursos</div>
+      <a href="Scout_Recursos_por_Actividad.html">Estimación de Recursos por Actividad</a>
+
+      <div class="dropdown-group">Comunicaciones</div>
+      <a href="Scout_Matriz_Comunicaciones.html">Matriz de Comunicaciones</a>
+
+      <div class="dropdown-group">Riesgos</div>
+      <a href="Scout_Registro_Riesgos_Completo.html">Registro Completo de Riesgos</a>
+
+      <div class="dropdown-group">Adquisiciones</div>
+      <a href="Scout_Plan_Adquisiciones.html">Plan Detallado de Adquisiciones</a>
+
+      <div class="dropdown-group">Interesados</div>
+      <a href="Scout_Matriz_Interesados.html">Matriz de Interesados</a>
+
+      <!-- NUEVA SECCIÓN DE EJECUCIÓN -->
+      <div class="dropdown-group">Ejecución del Proyecto</div>
+      <a href="Scout_Cap3_Bitacora_Ejecucion_Actividades.html">Bitácora de Ejecución</a>
+      <a href="Scout_Cap3_Registro_Calidad_Defectos.html">Registro de Calidad y Defectos</a>
+      <a href="Scout_Cap3_Riesgos_Implementados.html">Riesgos Implementados</a>
+      <a href="Scout_Cap3_Comunicaciones_Ejecutadas.html">Comunicaciones Ejecutadas</a>
+      <a href="Scout_Cap3_Involucramiento_Interesados.html">Involucramiento de Interesados</a>
+    </div>
+  </div>
+</div>
+<!-- FIN DE NAVEGACIÓN GLOBAL -->
+  <section class="card">
+    <div class="toolbar">
+      <label>Buscar
+        <input id="search" type="search" placeholder="Buscar en todos los campos">
+      </label>
+      
+            <label>Severidad
+              <select id="filter-0" data-field="Severidad">
+                <option value="">Todos</option>
+                <option value="Crítico">Crítico</option><option value="Mayor">Mayor</option><option value="Menor">Menor</option>
+              </select>
+            </label>
+            
+            <label>Componente
+              <select id="filter-1" data-field="Componente">
+                <option value="">Todos</option>
+                <option value="Accesos">Accesos</option><option value="Adopción">Adopción</option><option value="Capacitación">Capacitación</option><option value="Conocimiento">Conocimiento</option><option value="Dashboard">Dashboard</option><option value="Documentación">Documentación</option><option value="IA/NBA">IA/NBA</option><option value="Integración">Integración</option><option value="PAU">PAU</option><option value="Privacidad">Privacidad</option><option value="Rendimiento">Rendimiento</option><option value="Scripts">Scripts</option><option value="Telemetría">Telemetría</option><option value="Transcripción">Transcripción</option><option value="UX">UX</option>
+              </select>
+            </label>
+            
+            <label>Estado
+              <select id="filter-2" data-field="Estado">
+                <option value="">Todos</option>
+                <option value="Cerrado">Cerrado</option>
+              </select>
+            </label>
+            
+      <button id="reset" type="button">Restablecer</button>
+      <div id="status" class="status">Mostrando 18 de 18 registros</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="table-wrap">
+      <table id="data-table">
+        <thead><tr><th scope="col" data-column="0" data-type="text">ID <span class="sort">↕</span></th><th scope="col" data-column="1" data-type="text">Severidad <span class="sort">↕</span></th><th scope="col" data-column="2" data-type="text">Componente <span class="sort">↕</span></th><th scope="col" data-column="3" data-type="text">Hallazgo <span class="sort">↕</span></th><th scope="col" data-column="4" data-type="text">Acción correctiva <span class="sort">↕</span></th><th scope="col" data-column="5" data-type="text">Estado <span class="sort">↕</span></th><th scope="col" data-column="6" data-type="text">Fecha de cierre <span class="sort">↕</span></th></tr></thead>
+        <tbody>
+          <tr data-row="1" data-filter-0="Mayor" data-filter-1="Conocimiento" data-filter-2="Cerrado"><td class="">DEF-01</td><td class="">Mayor</td><td class="">Conocimiento</td><td class="">Dos artículos con instrucciones contradictorias</td><td class="">Consolidar versión y asignar propietario</td><td class="">Cerrado</td><td class="">05/08/2026</td></tr><tr data-row="2" data-filter-0="Menor" data-filter-1="Conocimiento" data-filter-2="Cerrado"><td class="">DEF-02</td><td class="">Menor</td><td class="">Conocimiento</td><td class="">Metadato de versión ausente en tres artículos</td><td class="">Completar metadatos y reindexar</td><td class="">Cerrado</td><td class="">06/08/2026</td></tr><tr data-row="3" data-filter-0="Crítico" data-filter-1="Privacidad" data-filter-2="Cerrado"><td class="">DEF-03</td><td class="">Crítico</td><td class="">Privacidad</td><td class="">Token de dato personal visible en muestra de prueba</td><td class="">Reanonimizar muestra, bloquear lote y auditar reglas</td><td class="">Cerrado</td><td class="">14/08/2026</td></tr><tr data-row="4" data-filter-0="Mayor" data-filter-1="IA/NBA" data-filter-2="Cerrado"><td class="">DEF-04</td><td class="">Mayor</td><td class="">IA/NBA</td><td class="">Regla priorizaba flujo alterno en motivo 07</td><td class="">Ajustar prioridad y repetir holdout</td><td class="">Cerrado</td><td class="">15/08/2026</td></tr><tr data-row="5" data-filter-0="Menor" data-filter-1="UX" data-filter-2="Cerrado"><td class="">DEF-05</td><td class="">Menor</td><td class="">UX</td><td class="">Texto de sugerencia excedía el área visible</td><td class="">Reducir longitud y aplicar truncado controlado</td><td class="">Cerrado</td><td class="">17/08/2026</td></tr><tr data-row="6" data-filter-0="Mayor" data-filter-1="Integración" data-filter-2="Cerrado"><td class="">DEF-06</td><td class="">Mayor</td><td class="">Integración</td><td class="">Resumen no preservaba formato al copiar al SGC</td><td class="">Ajustar transformación de texto</td><td class="">Cerrado</td><td class="">18/08/2026</td></tr><tr data-row="7" data-filter-0="Menor" data-filter-1="Telemetría" data-filter-2="Cerrado"><td class="">DEF-07</td><td class="">Menor</td><td class="">Telemetría</td><td class="">Evento de feedback sin zona horaria</td><td class="">Normalizar sello de tiempo</td><td class="">Cerrado</td><td class="">18/08/2026</td></tr><tr data-row="8" data-filter-0="Mayor" data-filter-1="Rendimiento" data-filter-2="Cerrado"><td class="">DEF-08</td><td class="">Mayor</td><td class="">Rendimiento</td><td class="">Latencia P95 superior a 4 segundos en carga máxima</td><td class="">Aplicar caché y limitar función no crítica</td><td class="">Cerrado</td><td class="">19/08/2026</td></tr><tr data-row="9" data-filter-0="Menor" data-filter-1="Accesos" data-filter-2="Cerrado"><td class="">DEF-09</td><td class="">Menor</td><td class="">Accesos</td><td class="">Rol supervisor mostraba opción no habilitada</td><td class="">Corregir matriz de permisos</td><td class="">Cerrado</td><td class="">19/08/2026</td></tr><tr data-row="10" data-filter-0="Menor" data-filter-1="Scripts" data-filter-2="Cerrado"><td class="">DEF-10</td><td class="">Menor</td><td class="">Scripts</td><td class="">Dos sugerencias contenían abreviaturas no aprobadas</td><td class="">Normalizar lenguaje</td><td class="">Cerrado</td><td class="">20/08/2026</td></tr><tr data-row="11" data-filter-0="Mayor" data-filter-1="Transcripción" data-filter-2="Cerrado"><td class="">DEF-11</td><td class="">Mayor</td><td class="">Transcripción</td><td class="">Exactitud menor en llamadas con ruido elevado</td><td class="">Calibrar modelo y activar fallback</td><td class="">Cerrado</td><td class="">20/08/2026</td></tr><tr data-row="12" data-filter-0="Menor" data-filter-1="PAU" data-filter-2="Cerrado"><td class="">DEF-12</td><td class="">Menor</td><td class="">PAU</td><td class="">Caso 32 sin evidencia adjunta</td><td class="">Completar evidencia y revalidar</td><td class="">Cerrado</td><td class="">21/08/2026</td></tr><tr data-row="13" data-filter-0="Menor" data-filter-1="Capacitación" data-filter-2="Cerrado"><td class="">DEF-13</td><td class="">Menor</td><td class="">Capacitación</td><td class="">Guía no incluía ejemplo de descarte responsable</td><td class="">Actualizar guía y micropráctica</td><td class="">Cerrado</td><td class="">21/08/2026</td></tr><tr data-row="14" data-filter-0="Menor" data-filter-1="Dashboard" data-filter-2="Cerrado"><td class="">DEF-14</td><td class="">Menor</td><td class="">Dashboard</td><td class="">Filtro de turno no retenía selección</td><td class="">Corregir persistencia</td><td class="">Cerrado</td><td class="">27/08/2026</td></tr><tr data-row="15" data-filter-0="Menor" data-filter-1="Adopción" data-filter-2="Cerrado"><td class="">DEF-15</td><td class="">Menor</td><td class="">Adopción</td><td class="">Mensaje de nudge repetido a usuarios activos</td><td class="">Ajustar regla de frecuencia</td><td class="">Cerrado</td><td class="">28/08/2026</td></tr><tr data-row="16" data-filter-0="Menor" data-filter-1="Integración" data-filter-2="Cerrado"><td class="">DEF-16</td><td class="">Menor</td><td class="">Integración</td><td class="">Log duplicado en reconexión</td><td class="">Deduplicar eventos</td><td class="">Cerrado</td><td class="">31/08/2026</td></tr><tr data-row="17" data-filter-0="Menor" data-filter-1="UX" data-filter-2="Cerrado"><td class="">DEF-17</td><td class="">Menor</td><td class="">UX</td><td class="">Contraste insuficiente en estado informativo</td><td class="">Ajustar contraste</td><td class="">Cerrado</td><td class="">01/09/2026</td></tr><tr data-row="18" data-filter-0="Menor" data-filter-1="Documentación" data-filter-2="Cerrado"><td class="">DEF-18</td><td class="">Menor</td><td class="">Documentación</td><td class="">Runbook sin contacto secundario</td><td class="">Agregar respaldo y horario</td><td class="">Cerrado</td><td class="">03/09/2026</td></tr>
+        </tbody>
+      </table>
+      <div id="no-results" class="no-results">No se encontraron registros con los filtros aplicados.</div>
+    </div>
+    <p class="note">Fuente: Elaboración propia. Información ficticia preparada exclusivamente para fines académicos.</p>
+  </section>
+</main>
+<script>
+(() => {
+  "use strict";
+
+  const table = document.getElementById("data-table");
+  const tbody = table.tBodies[0];
+  const rows = Array.from(tbody.rows);
+  const search = document.getElementById("search");
+  const filterSelects = Array.from(document.querySelectorAll("select[id^='filter-']"));
+  const status = document.getElementById("status");
+  const noResults = document.getElementById("no-results");
+  const total = rows.length;
+  let sortColumn = -1;
+  let sortDirection = 1;
+
+  const normalize = value => String(value ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+
+  function applyFilters() {
+    const query = normalize(search.value);
+    let visible = 0;
+
+    rows.forEach(row => {
+      const matchesSearch = !query || normalize(row.textContent).includes(query);
+      const matchesFilters = filterSelects.every((select, index) => {
+        const selected = select.value;
+        return !selected || row.getAttribute(`data-filter-${index}`) === selected;
+      });
+      const show = matchesSearch && matchesFilters;
+      row.hidden = !show;
+      if (show) visible += 1;
+    });
+
+    status.textContent = `Mostrando ${visible} de ${total} registros`;
+    noResults.style.display = visible === 0 ? "block" : "none";
+  }
+
+  function parseNumber(value) {
+    const cleaned = String(value).replace(/[^0-9.-]/g, "");
+    const number = Number(cleaned);
+    return Number.isFinite(number) ? number : 0;
+  }
+
+  table.querySelectorAll("th").forEach((th, columnIndex) => {
+    th.addEventListener("click", () => {
+      const type = th.dataset.type || "text";
+      if (sortColumn === columnIndex) {
+        sortDirection *= -1;
+      } else {
+        sortColumn = columnIndex;
+        sortDirection = 1;
+      }
+
+      const sorted = rows.slice().sort((a, b) => {
+        const av = a.cells[columnIndex].textContent.trim();
+        const bv = b.cells[columnIndex].textContent.trim();
+        if (type === "number") {
+          return (parseNumber(av) - parseNumber(bv)) * sortDirection;
+        }
+        return av.localeCompare(bv, "es", { numeric:true, sensitivity:"base" }) * sortDirection;
+      });
+
+      sorted.forEach(row => tbody.appendChild(row));
+      table.querySelectorAll(".sort").forEach(icon => icon.textContent = "↕");
+      th.querySelector(".sort").textContent = sortDirection === 1 ? "↑" : "↓";
+    });
+  });
+
+  search.addEventListener("input", applyFilters);
+  filterSelects.forEach(select => select.addEventListener("change", applyFilters));
+
+  document.getElementById("reset").addEventListener("click", () => {
+    search.value = "";
+    filterSelects.forEach(select => select.value = "");
+    applyFilters();
+  });
+
+  applyFilters();
+})();
+</script>
+</body>
+</html>

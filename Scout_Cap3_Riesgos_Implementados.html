@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Registro de riesgos implementados</title>
+<style>
+:root {
+  --navy:#1f365c;
+  --navy2:#2d4c7e;
+  --gold:#f6b82e;
+  --bg:#f4f6fa;
+  --ink:#1c2430;
+  --muted:#64748b;
+  --line:#d7dde6;
+  --soft:#eef2f7;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  font-family:"Segoe UI",Arial,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+}
+header {
+  background:linear-gradient(110deg,var(--gold),var(--navy));
+  color:white;
+  padding:28px 34px;
+}
+header h1 { margin:0 0 7px; font-size:28px; }
+header p { margin:0; opacity:.96; }
+main { max-width:1800px; margin:auto; padding:22px 28px 34px; }
+.card {
+  background:white;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:18px;
+  margin-bottom:18px;
+  box-shadow:0 3px 12px rgba(31,54,92,.08);
+}
+.toolbar {
+  display:flex;
+  align-items:end;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.toolbar label {
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  font-size:12px;
+  color:#475569;
+}
+.toolbar input,.toolbar select,.toolbar button {
+  height:40px;
+  padding:8px 11px;
+  border:1px solid #c7cfda;
+  border-radius:7px;
+  background:white;
+  font-size:14px;
+}
+.toolbar input { min-width:320px; }
+.toolbar button {
+  border:0;
+  background:#687587;
+  color:white;
+  font-weight:600;
+  cursor:pointer;
+}
+.toolbar button:hover { background:#536071; }
+.status {
+  margin-left:auto;
+  padding:10px 0;
+  color:var(--muted);
+  font-size:13px;
+}
+.table-wrap {
+  overflow:auto;
+  max-height:72vh;
+  border:1px solid var(--line);
+  border-radius:8px;
+}
+table {
+  width:100%;
+  min-width:1400px;
+  border-collapse:separate;
+  border-spacing:0;
+  font-size:13px;
+}
+th {
+  position:sticky;
+  top:0;
+  z-index:3;
+  background:var(--navy);
+  color:white;
+  text-align:left;
+  cursor:pointer;
+  user-select:none;
+}
+th:hover { background:var(--navy2); }
+th,td {
+  padding:9px 10px;
+  border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  vertical-align:top;
+}
+th:last-child,td:last-child { border-right:0; }
+tbody tr:nth-child(even) { background:#f8fafc; }
+tbody tr:hover { background:#edf4ff; }
+.number { text-align:right; white-space:nowrap; }
+.sort { opacity:.65; margin-left:5px; }
+.note {
+  margin:14px 0 0;
+  color:var(--muted);
+  font-size:13px;
+  font-style:italic;
+}
+.no-results {
+  display:none;
+  padding:20px;
+  text-align:center;
+  color:var(--muted);
+}
+@media(max-width:900px) {
+  main { padding:14px; }
+  header { padding:24px 18px; }
+  .toolbar input { min-width:220px; }
+  .status { width:100%; margin-left:0; }
+}
+@media print {
+  body { background:white; }
+  header,.toolbar { display:none!important; }
+  main { padding:0; max-width:none; }
+  .card { box-shadow:none; border:0; padding:0; }
+  .table-wrap { max-height:none; overflow:visible; border:0; }
+  table { min-width:0; font-size:8px; }
+  th { position:static; }
+}
+
+
+/* --- ESTILOS DE NAVEGACIÓN GLOBAL --- */
+.global-nav {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* Botón Home */
+.btn-home {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--navy, #1f365c); /* Usa el azul marino de tu paleta */
+  color: white;
+  padding: 9px 16px;
+  border-radius: 7px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: background-color 0.2s ease;
+}
+.btn-home:hover {
+  background-color: #2d4c7e; /* Un tono más claro al pasar el mouse */
+  color: white;
+}
+
+/* Dropdown Container */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Button */
+.btn-dropdown {
+  background-color: white;
+  color: #475569;
+  padding: 9px 16px;
+  border: 1px solid #c8d0dc;
+  border-radius: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  font-family: inherit;
+}
+.btn-dropdown:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+}
+
+/* Dropdown Menu Contenido (Oculto por defecto) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 260px;
+  max-height: 70vh; /* Controla que el menú no sea más alto que el 70% de la pantalla */
+  overflow-y: auto; /* Agrega barra de desplazamiento si el contenido excede el alto máximo */
+  box-shadow: 0px 8px 16px 0px rgba(31,54,92,0.15);
+  border: 1px solid #dce2ea;
+  border-radius: 8px;
+  z-index: 100;
+  top: 110%; /* Aparece justo debajo del botón */
+  left: 0;
+  padding: 8px 0;
+}
+
+/* Mostrar el menú al hacer hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Títulos de agrupación en el menú */
+.dropdown-group {
+  padding: 8px 16px 4px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Enlaces del menú */
+.dropdown-content a {
+  color: var(--ink, #1c2430);
+  padding: 8px 16px;
+  text-decoration: none;
+  display: block;
+  font-size: 13px;
+  transition: background-color 0.2s;
+}
+
+.dropdown-content a:hover {
+  background-color: #edf4ff; /* Fondo azul muy suave al pasar el mouse */
+  color: var(--navy, #1f365c);
+}
+
+/* Ocultar en impresión */
+@media print {
+  .global-nav { display: none !important; }
+}
+/* ------------------------------------ */
+
+</style>
+</head>
+<body>
+<header>
+  <h1>Registro de riesgos implementados</h1>
+  <p>Capítulo 3 — Ejecución | Proyecto Scout en Everline Solutions</p>
+</header>
+<main>
+  <!-- INCIO DE NAVEGACIÓN GLOBAL -->
+<div class="global-nav">
+  <!-- Botón Home -->
+  <a href="index.html" class="btn-home">
+    <!-- Icono de casita SVG -->
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px; vertical-align: text-bottom;">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+    Volver al Índice
+  </a>
+
+  <!-- Dropdown Menu -->
+  <div class="dropdown">
+    <button class="btn-dropdown">
+      Ir a otro anexo
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 6px; vertical-align: middle;">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+    <div class="dropdown-content">
+      <div class="dropdown-group">Alcance y Requisitos</div>
+      <a href="Scout_Tabla3_Registro_Requisitos_Interactivo.html">Registro Consolidado de Requisitos</a>
+      <a href="Scout_Tabla4_Matriz_Trazabilidad_Requisitos_Interactiva.html">Matriz de Trazabilidad</a>
+      <a href="Scout_WBS_Interactiva.html">EDT / WBS Interactiva</a>
+      <a href="Scout_Diccionario_EDT_Completo.html">Diccionario de la EDT</a>
+      
+      <div class="dropdown-group">Cronograma</div>
+      <a href="Scout_Tabla9_Lista maestra de actividades.html">Lista Maestra de Actividades</a>
+      <a href="Scout_Ajuste_Secuencia_Precedentes_Sucesoras.html">Ajuste de Secuencia y Dependencias</a>
+      <!-- <a href="Scout_Gantt_Detallado.html">Cronograma Gantt Detallado</a>-->
+      <a href="Scout_Ajuste_PERT_Detallado.html">Estimaciones PERT Detalladas</a>
+      
+      <div class="dropdown-group">Costos</div>
+      <a href="Scout_Tabla15_Estimacion_Costos_Actividad_Interactiva.html">Estimación Detallada de Costos</a>
+      <a href="Scout_Linea_Base_Costos.html">Línea Base de Costos</a>
+
+      <div class="dropdown-group">Recursos</div>
+      <a href="Scout_Recursos_por_Actividad.html">Estimación de Recursos por Actividad</a>
+
+      <div class="dropdown-group">Comunicaciones</div>
+      <a href="Scout_Matriz_Comunicaciones.html">Matriz de Comunicaciones</a>
+
+      <div class="dropdown-group">Riesgos</div>
+      <a href="Scout_Registro_Riesgos_Completo.html">Registro Completo de Riesgos</a>
+
+      <div class="dropdown-group">Adquisiciones</div>
+      <a href="Scout_Plan_Adquisiciones.html">Plan Detallado de Adquisiciones</a>
+
+      <div class="dropdown-group">Interesados</div>
+      <a href="Scout_Matriz_Interesados.html">Matriz de Interesados</a>
+
+      <!-- NUEVA SECCIÓN DE EJECUCIÓN -->
+      <div class="dropdown-group">Ejecución del Proyecto</div>
+      <a href="Scout_Cap3_Bitacora_Ejecucion_Actividades.html">Bitácora de Ejecución</a>
+      <a href="Scout_Cap3_Registro_Calidad_Defectos.html">Registro de Calidad y Defectos</a>
+      <a href="Scout_Cap3_Riesgos_Implementados.html">Riesgos Implementados</a>
+      <a href="Scout_Cap3_Comunicaciones_Ejecutadas.html">Comunicaciones Ejecutadas</a>
+      <a href="Scout_Cap3_Involucramiento_Interesados.html">Involucramiento de Interesados</a>
+    </div>
+  </div>
+</div>
+<!-- FIN DE NAVEGACIÓN GLOBAL -->
+  <section class="card">
+    <div class="toolbar">
+      <label>Buscar
+        <input id="search" type="search" placeholder="Buscar en todos los campos">
+      </label>
+      
+            <label>Categoría
+              <select id="filter-0" data-field="Categoría">
+                <option value="">Todos</option>
+                <option value="Adopción">Adopción</option><option value="Adquisición">Adquisición</option><option value="Alcance">Alcance</option><option value="Aprendizaje">Aprendizaje</option><option value="Beneficios">Beneficios</option><option value="Configuración">Configuración</option><option value="Continuidad">Continuidad</option><option value="Costo">Costo</option><option value="Datos / Aprobación">Datos / Aprobación</option><option value="Datos / Conocimiento">Datos / Conocimiento</option><option value="Gobernanza">Gobernanza</option><option value="IA / Calidad">IA / Calidad</option><option value="IA / Voz">IA / Voz</option><option value="Integración">Integración</option><option value="Interesados">Interesados</option><option value="Medición">Medición</option><option value="Operación">Operación</option><option value="PAU">PAU</option><option value="Privacidad">Privacidad</option><option value="Proveedor">Proveedor</option><option value="Recursos técnicos">Recursos técnicos</option><option value="Rendimiento">Rendimiento</option><option value="Seguridad">Seguridad</option><option value="Uso responsable">Uso responsable</option>
+              </select>
+            </label>
+            
+            <label>Nivel
+              <select id="filter-1" data-field="Nivel">
+                <option value="">Todos</option>
+                <option value="Alto">Alto</option><option value="Crítico">Crítico</option><option value="Moderado">Moderado</option>
+              </select>
+            </label>
+            
+            <label>Estado ejecución
+              <select id="filter-2" data-field="Estado ejecución">
+                <option value="">Todos</option>
+                <option value="Advertencia">Advertencia</option><option value="Casi evento">Casi evento</option><option value="Materializado">Materializado</option><option value="Materializado como hallazgo de prueba">Materializado como hallazgo de prueba</option><option value="Materializado parcial">Materializado parcial</option><option value="No materializado">No materializado</option><option value="Resultado favorable">Resultado favorable</option><option value="Solicitud recibida">Solicitud recibida</option>
+              </select>
+            </label>
+            
+            <label>Respuesta aplicada
+              <select id="filter-3" data-field="Respuesta aplicada">
+                <option value="">Todos</option>
+                <option value="Aceptado/monitoreado">Aceptado/monitoreado</option><option value="Evitado">Evitado</option><option value="Evitado antes de producción">Evitado antes de producción</option><option value="Explotado">Explotado</option><option value="Mitigación aplicada">Mitigación aplicada</option><option value="Mitigado">Mitigado</option><option value="Mitigado y cerrado">Mitigado y cerrado</option><option value="Transferido">Transferido</option>
+              </select>
+            </label>
+            
+      <button id="reset" type="button">Restablecer</button>
+      <div id="status" class="status">Mostrando 24 de 24 registros</div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="table-wrap">
+      <table id="data-table">
+        <thead><tr><th scope="col" data-column="0" data-type="text">ID <span class="sort">↕</span></th><th scope="col" data-column="1" data-type="text">Categoría <span class="sort">↕</span></th><th scope="col" data-column="2" data-type="text">Causa <span class="sort">↕</span></th><th scope="col" data-column="3" data-type="text">Evento <span class="sort">↕</span></th><th scope="col" data-column="4" data-type="text">Efecto <span class="sort">↕</span></th><th scope="col" data-column="5" data-type="text">Propietario <span class="sort">↕</span></th><th scope="col" data-column="6" data-type="number">P <span class="sort">↕</span></th><th scope="col" data-column="7" data-type="number">I <span class="sort">↕</span></th><th scope="col" data-column="8" data-type="number">P×I <span class="sort">↕</span></th><th scope="col" data-column="9" data-type="text">Nivel <span class="sort">↕</span></th><th scope="col" data-column="10" data-type="text">Disparador <span class="sort">↕</span></th><th scope="col" data-column="11" data-type="text">Estado ejecución <span class="sort">↕</span></th><th scope="col" data-column="12" data-type="text">Respuesta aplicada <span class="sort">↕</span></th><th scope="col" data-column="13" data-type="text">Resultado / evidencia <span class="sort">↕</span></th><th scope="col" data-column="14" data-type="text">Costo real <span class="sort">↕</span></th></tr></thead>
+        <tbody>
+          <tr data-row="1" data-filter-0="IA / Calidad" data-filter-1="Crítico" data-filter-2="No materializado" data-filter-3="Mitigación aplicada"><td class="">R-01</td><td class="">IA / Calidad</td><td class="">Reglas incompletas o entrenamiento insuficiente</td><td class="">Scout recomienda un proceso incorrecto</td><td class="">Retrabajo, calidad menor y riesgo contractual</td><td class="">Product Owner / Calidad</td><td class="number">4</td><td class="number">5</td><td class="number">20</td><td class="">Crítico</td><td class="">Precisión &lt;85% o aumento de descartes</td><td class="">No materializado</td><td class="">Mitigación aplicada</td><td class="">Precisión 88.7%; holdout y humano en el circuito</td><td class="">USD 0</td></tr><tr data-row="2" data-filter-0="Datos / Conocimiento" data-filter-1="Crítico" data-filter-2="Materializado parcial" data-filter-3="Mitigado y cerrado"><td class="">R-02</td><td class="">Datos / Conocimiento</td><td class="">Artículos duplicados, obsoletos o sin propietario</td><td class="">La herramienta recupera contenido no vigente</td><td class="">Respuestas inconsistentes y pérdida de confianza</td><td class="">Knowledge Manager</td><td class="number">4</td><td class="number">5</td><td class="number">20</td><td class="">Crítico</td><td class="">Artículo sin versión o hallazgo de contradicción</td><td class="">Materializado parcial</td><td class="">Mitigado y cerrado</td><td class="">Se detectaron contradicciones; se consolidaron versiones</td><td class="">USD 400</td></tr><tr data-row="3" data-filter-0="Privacidad" data-filter-1="Crítico" data-filter-2="Materializado como hallazgo de prueba" data-filter-3="Evitado antes de producción"><td class="">R-03</td><td class="">Privacidad</td><td class="">Anonimización o permisos inadecuados</td><td class="">Se expone información personal o restringida</td><td class="">Incidente legal, reputacional y suspensión del piloto</td><td class="">Seguridad / Legal</td><td class="number">2</td><td class="number">5</td><td class="number">10</td><td class="">Crítico</td><td class="">Dato personal en muestra o acceso no autorizado</td><td class="">Materializado como hallazgo de prueba</td><td class="">Evitado antes de producción</td><td class="">Se bloqueó lote y se reanonimizó la muestra</td><td class="">USD 0</td></tr><tr data-row="4" data-filter-0="IA / Voz" data-filter-1="Alto" data-filter-2="Advertencia" data-filter-3="Mitigado"><td class="">R-04</td><td class="">IA / Voz</td><td class="">Acentos, ruido o mala calidad de audio</td><td class="">La transcripción y detección de intención son inexactas</td><td class="">NBA tardía o incorrecta</td><td class="">Proveedor / Datos</td><td class="number">3</td><td class="number">4</td><td class="number">12</td><td class="">Alto</td><td class="">Exactitud de transcripción bajo umbral de prueba</td><td class="">Advertencia</td><td class="">Mitigado</td><td class="">Calibración por ruido y fallback manual</td><td class="">USD 0</td></tr><tr data-row="5" data-filter-0="Rendimiento" data-filter-1="Alto" data-filter-2="Materializado" data-filter-3="Mitigado y cerrado"><td class="">R-05</td><td class="">Rendimiento</td><td class="">Carga o arquitectura insuficiente</td><td class="">La latencia supera 3 segundos</td><td class="">Baja utilidad y adopción</td><td class="">TI / Proveedor</td><td class="number">3</td><td class="number">4</td><td class="number">12</td><td class="">Alto</td><td class="">P95 o mediana fuera de umbral</td><td class="">Materializado</td><td class="">Mitigado y cerrado</td><td class="">Caché y modo degradado redujeron mediana a 2.4 s</td><td class="">USD 500</td></tr><tr data-row="6" data-filter-0="Integración" data-filter-1="Alto" data-filter-2="Advertencia" data-filter-3="Mitigado"><td class="">R-06</td><td class="">Integración</td><td class="">APIs, permisos o campos no disponibles</td><td class="">Los conectores no funcionan en la fecha prevista</td><td class="">Retraso de pruebas y go/no-go</td><td class="">Líder técnico</td><td class="number">3</td><td class="number">5</td><td class="number">15</td><td class="">Alto</td><td class="">Bloqueo técnico &gt;24 h o API sin acceso</td><td class="">Advertencia</td><td class="">Mitigado</td><td class="">Mock y soporte temprano evitaron mover G2</td><td class="">USD 0</td></tr><tr data-row="7" data-filter-0="Adopción" data-filter-1="Alto" data-filter-2="Advertencia" data-filter-3="Mitigado"><td class="">R-07</td><td class="">Adopción</td><td class="">Temor, poca participación o diseño poco intuitivo</td><td class="">Agentes no usan o descartan Scout</td><td class="">Beneficios insuficientes</td><td class="">Líder de cambio / Operaciones</td><td class="number">3</td><td class="number">4</td><td class="number">12</td><td class="">Alto</td><td class="">Uso semanal &lt;80% o utilidad &lt;4/5</td><td class="">Advertencia</td><td class="">Mitigado</td><td class="">Champions y nudges elevaron adopción a 84.6%</td><td class="">USD 0</td></tr><tr data-row="8" data-filter-0="Alcance" data-filter-1="Alto" data-filter-2="Solicitud recibida" data-filter-3="Evitado"><td class="">R-08</td><td class="">Alcance</td><td class="">Solicitudes de nuevos canales, motivos o automatizaciones</td><td class="">Se amplía el alcance sin ajuste formal</td><td class="">Retraso y sobrecosto</td><td class="">PM / Product Owner</td><td class="number">3</td><td class="number">4</td><td class="number">12</td><td class="">Alto</td><td class="">Solicitud fuera de 20 motivos o de transacción autónoma</td><td class="">Solicitud recibida</td><td class="">Evitado</td><td class="">Chat fue diferido mediante CR-02</td><td class="">USD 0</td></tr><tr data-row="9" data-filter-0="Datos / Aprobación" data-filter-1="Alto" data-filter-2="No materializado" data-filter-3="Evitado"><td class="">R-09</td><td class="">Datos / Aprobación</td><td class="">Cliente o Legal demora autorización</td><td class="">No se accede a transcripciones o conocimiento</td><td class="">Configuración incompleta</td><td class="">Sponsor / Legal</td><td class="number">2</td><td class="number">5</td><td class="number">10</td><td class="">Alto</td><td class="">Aprobación no emitida al cierre de semana 1</td><td class="">No materializado</td><td class="">Evitado</td><td class="">Autorizaciones emitidas durante semana 1</td><td class="">USD 0</td></tr><tr data-row="10" data-filter-0="Proveedor" data-filter-1="Alto" data-filter-2="No materializado" data-filter-3="Transferido"><td class="">R-10</td><td class="">Proveedor</td><td class="">Demora en licencias, ambientes o soporte</td><td class="">Sandbox no está listo</td><td class="">Inicio tardío de configuración</td><td class="">Procurement / Proveedor</td><td class="number">3</td><td class="number">4</td><td class="number">12</td><td class="">Alto</td><td class="">Ambiente no disponible el 3 de agosto</td><td class="">No materializado</td><td class="">Transferido</td><td class="">Sandbox disponible el 3 de agosto</td><td class="">USD 0</td></tr><tr data-row="11" data-filter-0="Aprendizaje" data-filter-1="Moderado" data-filter-2="Materializado" data-filter-3="Mitigado y cerrado"><td class="">R-11</td><td class="">Aprendizaje</td><td class="">Complejidad de la herramienta o diferencias de experiencia</td><td class="">Curva de aprendizaje más lenta de lo previsto</td><td class="">Menor preparación y mayor soporte durante el piloto</td><td class="">Formación / Operaciones</td><td class="number">3</td><td class="number">3</td><td class="number">9</td><td class="">Moderado</td><td class="">Aprobación práctica &lt;85% o refuerzo requerido &gt;20%</td><td class="">Materializado</td><td class="">Mitigado y cerrado</td><td class="">17 refuerzos; aprobación práctica final dentro de meta</td><td class="">USD 600</td></tr><tr data-row="12" data-filter-0="Operación" data-filter-1="Crítico" data-filter-2="Materializado" data-filter-3="Mitigado y cerrado"><td class="">R-12</td><td class="">Operación</td><td class="">Pico de volumen o restricciones de servicio</td><td class="">No se liberan usuarios para PAU/capacitación</td><td class="">Reprogramación y menor calidad</td><td class="">Operaciones</td><td class="number">4</td><td class="number">4</td><td class="number">16</td><td class="">Crítico</td><td class="">Forecast &gt;110% o nivel de servicio en rojo</td><td class="">Materializado</td><td class="">Mitigado y cerrado</td><td class="">Sesiones repetidas y ampliación de ventanas</td><td class="">USD 500</td></tr><tr data-row="13" data-filter-0="Recursos técnicos" data-filter-1="Alto" data-filter-2="Advertencia" data-filter-3="Mitigado"><td class="">R-13</td><td class="">Recursos técnicos</td><td class="">Especialistas compartidos con otras iniciativas</td><td class="">Capacidad de TI/Datos insuficiente</td><td class="">Tareas críticas se desplazan</td><td class="">TI / PM</td><td class="number">3</td><td class="number">4</td><td class="number">12</td><td class="">Alto</td><td class="">Utilización &gt;90% o ausencia &gt;2 días</td><td class="">Advertencia</td><td class="">Mitigado</td><td class="">Nivelación y suplencia de recursos técnicos</td><td class="">USD 0</td></tr><tr data-row="14" data-filter-0="Seguridad" data-filter-1="Crítico" data-filter-2="No materializado" data-filter-3="Evitado"><td class="">R-14</td><td class="">Seguridad</td><td class="">Controles no cumplen estándares del cliente</td><td class="">Se detectan hallazgos críticos</td><td class="">No-go o remediación costosa</td><td class="">Seguridad</td><td class="number">2</td><td class="number">5</td><td class="number">10</td><td class="">Crítico</td><td class="">Hallazgo crítico en pruebas</td><td class="">No materializado</td><td class="">Evitado</td><td class="">Cero hallazgos críticos abiertos en G3</td><td class="">USD 0</td></tr><tr data-row="15" data-filter-0="PAU" data-filter-1="Alto" data-filter-2="Advertencia" data-filter-3="Mitigado"><td class="">R-15</td><td class="">PAU</td><td class="">Casos insuficientes o defectos funcionales</td><td class="">PAU no alcanza el criterio de aprobación</td><td class="">Retraso del lanzamiento</td><td class="">Calidad / PO</td><td class="number">3</td><td class="number">4</td><td class="number">12</td><td class="">Alto</td><td class="">Pass rate &lt;95% o caso crítico fallido</td><td class="">Advertencia</td><td class="">Mitigado</td><td class="">Revalidación focalizada; PAU final 96.8%</td><td class="">USD 0</td></tr><tr data-row="16" data-filter-0="Medición" data-filter-1="Alto" data-filter-2="Advertencia" data-filter-3="Mitigado"><td class="">R-16</td><td class="">Medición</td><td class="">Fuentes inconsistentes o datos de línea base incompletos</td><td class="">No se puede demostrar el impacto</td><td class="">Decisión de escalamiento débil</td><td class="">Datos / Finanzas</td><td class="number">3</td><td class="number">5</td><td class="number">15</td><td class="">Alto</td><td class="">Diferencia &gt;2% entre fuentes</td><td class="">Advertencia</td><td class="">Mitigado</td><td class="">Diccionario y conciliación redujeron diferencia a 0.7%</td><td class="">USD 0</td></tr><tr data-row="17" data-filter-0="Beneficios" data-filter-1="Alto" data-filter-2="Resultado favorable" data-filter-3="Explotado"><td class="">R-17</td><td class="">Beneficios</td><td class="">Adopción o precisión no generan cambio operativo</td><td class="">No se alcanzan metas de RPC/calidad/TMO</td><td class="">Beneficio financiero menor</td><td class="">Sponsor / Operaciones</td><td class="number">3</td><td class="number">5</td><td class="number">15</td><td class="">Alto</td><td class="">Tendencia sin mejora al cierre de semana 7</td><td class="">Resultado favorable</td><td class="">Explotado</td><td class="">Metas operativas superadas</td><td class="">USD 0</td></tr><tr data-row="18" data-filter-0="Costo" data-filter-1="Alto" data-filter-2="No materializado" data-filter-3="Aceptado/monitoreado"><td class="">R-18</td><td class="">Costo</td><td class="">Mayor esfuerzo de integración o remediación</td><td class="">El costo supera la estimación directa</td><td class="">Consumo de reserva o cambio de presupuesto</td><td class="">PM / Finanzas</td><td class="number">3</td><td class="number">4</td><td class="number">12</td><td class="">Alto</td><td class="">Compromisos &gt;95% del BAC antes de semana 7</td><td class="">No materializado</td><td class="">Aceptado/monitoreado</td><td class="">AC USD 77,200 dentro del BAC</td><td class="">USD 0</td></tr><tr data-row="19" data-filter-0="Interesados" data-filter-1="Moderado" data-filter-2="Advertencia" data-filter-3="Mitigado"><td class="">R-19</td><td class="">Interesados</td><td class="">Desacuerdo cliente/áreas sobre criterios</td><td class="">Se demoran aprobaciones o aceptación</td><td class="">Hitos comprometidos</td><td class="">Sponsor / Cliente</td><td class="number">2</td><td class="number">4</td><td class="number">8</td><td class="">Moderado</td><td class="">Decisión pendiente &gt;24 h en gate</td><td class="">Advertencia</td><td class="">Mitigado</td><td class="">Aprobadores alternos y prelecturas de gates</td><td class="">USD 0</td></tr><tr data-row="20" data-filter-0="Configuración" data-filter-1="Moderado" data-filter-2="Materializado" data-filter-3="Mitigado y cerrado"><td class="">R-20</td><td class="">Configuración</td><td class="">Cambios aprobados después de la línea base</td><td class="">Cambios de proceso desactualizan la configuración de Scout</td><td class="">Retrabajo y menor precisión</td><td class="">Product Owner / Calidad</td><td class="number">2</td><td class="number">4</td><td class="number">8</td><td class="">Moderado</td><td class="">Nueva versión de proceso o artículo después de la configuración</td><td class="">Materializado</td><td class="">Mitigado y cerrado</td><td class="">Nueva política incorporada y configuración revalidada</td><td class="">USD 700</td></tr><tr data-row="21" data-filter-0="Adquisición" data-filter-1="Moderado" data-filter-2="No materializado" data-filter-3="Transferido"><td class="">R-21</td><td class="">Adquisición</td><td class="">Cláusulas, licencias o dependencia del proveedor inadecuadas</td><td class="">Se limita soporte, portabilidad o continuidad</td><td class="">Costo futuro o lock-in</td><td class="">Procurement / Legal</td><td class="number">2</td><td class="number">3</td><td class="number">6</td><td class="">Moderado</td><td class="">Excepción contractual no resuelta</td><td class="">No materializado</td><td class="">Transferido</td><td class="">Cláusulas de portabilidad y soporte aceptadas</td><td class="">USD 0</td></tr><tr data-row="22" data-filter-0="Continuidad" data-filter-1="Crítico" data-filter-2="No materializado" data-filter-3="Mitigado"><td class="">R-22</td><td class="">Continuidad</td><td class="">Falla del servicio o infraestructura</td><td class="">Scout queda indisponible durante atención</td><td class="">Interrupción y percepción negativa</td><td class="">TI / Proveedor</td><td class="number">2</td><td class="number">5</td><td class="number">10</td><td class="">Crítico</td><td class="">Incidente P1 o disponibilidad &lt;99%</td><td class="">No materializado</td><td class="">Mitigado</td><td class="">Disponibilidad 99.4%; sin incidente P1</td><td class="">USD 0</td></tr><tr data-row="23" data-filter-0="Uso responsable" data-filter-1="Alto" data-filter-2="No materializado" data-filter-3="Mitigado"><td class="">R-23</td><td class="">Uso responsable</td><td class="">El agente confía ciegamente en la sugerencia</td><td class="">Se aplica una respuesta sin validación humana</td><td class="">Error de servicio o cumplimiento</td><td class="">Operaciones / Calidad</td><td class="number">3</td><td class="number">4</td><td class="number">12</td><td class="">Alto</td><td class="">Incidente por no verificar recomendación</td><td class="">No materializado</td><td class="">Mitigado</td><td class="">Sin incidentes por uso sin validación humana</td><td class="">USD 0</td></tr><tr data-row="24" data-filter-0="Gobernanza" data-filter-1="Moderado" data-filter-2="Casi evento" data-filter-3="Mitigado"><td class="">R-24</td><td class="">Gobernanza</td><td class="">Dependencias interfuncionales y disponibilidad de aprobadores</td><td class="">Una dependencia interfuncional demora una decisión crítica</td><td class="">Desviación de fechas y actividades detenidas</td><td class="">PM / Sponsor</td><td class="number">3</td><td class="number">3</td><td class="number">9</td><td class="">Moderado</td><td class="">Decisión pendiente &gt;24 horas después del escalamiento</td><td class="">Casi evento</td><td class="">Mitigado</td><td class="">Prelectura y suplencia evitaron superar 24 h</td><td class="">USD 0</td></tr>
+        </tbody>
+      </table>
+      <div id="no-results" class="no-results">No se encontraron registros con los filtros aplicados.</div>
+    </div>
+    <p class="note">Fuente: Elaboración propia. Información ficticia preparada exclusivamente para fines académicos.</p>
+  </section>
+</main>
+<script>
+(() => {
+  "use strict";
+
+  const table = document.getElementById("data-table");
+  const tbody = table.tBodies[0];
+  const rows = Array.from(tbody.rows);
+  const search = document.getElementById("search");
+  const filterSelects = Array.from(document.querySelectorAll("select[id^='filter-']"));
+  const status = document.getElementById("status");
+  const noResults = document.getElementById("no-results");
+  const total = rows.length;
+  let sortColumn = -1;
+  let sortDirection = 1;
+
+  const normalize = value => String(value ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+
+  function applyFilters() {
+    const query = normalize(search.value);
+    let visible = 0;
+
+    rows.forEach(row => {
+      const matchesSearch = !query || normalize(row.textContent).includes(query);
+      const matchesFilters = filterSelects.every((select, index) => {
+        const selected = select.value;
+        return !selected || row.getAttribute(`data-filter-${index}`) === selected;
+      });
+      const show = matchesSearch && matchesFilters;
+      row.hidden = !show;
+      if (show) visible += 1;
+    });
+
+    status.textContent = `Mostrando ${visible} de ${total} registros`;
+    noResults.style.display = visible === 0 ? "block" : "none";
+  }
+
+  function parseNumber(value) {
+    const cleaned = String(value).replace(/[^0-9.-]/g, "");
+    const number = Number(cleaned);
+    return Number.isFinite(number) ? number : 0;
+  }
+
+  table.querySelectorAll("th").forEach((th, columnIndex) => {
+    th.addEventListener("click", () => {
+      const type = th.dataset.type || "text";
+      if (sortColumn === columnIndex) {
+        sortDirection *= -1;
+      } else {
+        sortColumn = columnIndex;
+        sortDirection = 1;
+      }
+
+      const sorted = rows.slice().sort((a, b) => {
+        const av = a.cells[columnIndex].textContent.trim();
+        const bv = b.cells[columnIndex].textContent.trim();
+        if (type === "number") {
+          return (parseNumber(av) - parseNumber(bv)) * sortDirection;
+        }
+        return av.localeCompare(bv, "es", { numeric:true, sensitivity:"base" }) * sortDirection;
+      });
+
+      sorted.forEach(row => tbody.appendChild(row));
+      table.querySelectorAll(".sort").forEach(icon => icon.textContent = "↕");
+      th.querySelector(".sort").textContent = sortDirection === 1 ? "↑" : "↓";
+    });
+  });
+
+  search.addEventListener("input", applyFilters);
+  filterSelects.forEach(select => select.addEventListener("change", applyFilters));
+
+  document.getElementById("reset").addEventListener("click", () => {
+    search.value = "";
+    filterSelects.forEach(select => select.value = "");
+    applyFilters();
+  });
+
+  applyFilters();
+})();
+</script>
+</body>
+</html>
